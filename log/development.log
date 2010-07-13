@@ -1,0 +1,2038 @@
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mMysql::Error: Table 'typo.sessions' doesn't exist: select * from sessions[0m
+  [4;36;1mSQL (66.5ms)[0m   [0;1mSELECT DATABASE() as db[0m
+  [4;35;1mSQL (4.2ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (248.1ms)[0m   [0;1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [4;35;1mSQL (322.6ms)[0m   [0mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Migrating to InitialSchema (1)
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mSQL (4.8ms)[0m   [0mCREATE TABLE `users` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `login` varchar(255), `password` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (5.1ms)[0m   [0;1mCREATE TABLE `articles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `title` varchar(255), `author` varchar(255), `body` text, `body_html` text, `extended` text, `excerpt` text, `keywords` varchar(255), `allow_comments` int(11), `allow_pings` int(11), `published` int(11) DEFAULT 1, `text_filter` varchar(255), `created_at` datetime, `updated_at` datetime, `extended_html` text, `permalink` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (9.5ms)[0m   [0mCREATE INDEX `index_articles_on_permalink` ON `articles` (`permalink`)[0m
+  [4;36;1mSQL (4.0ms)[0m   [0;1mCREATE TABLE `categories` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `position` int(11)) ENGINE=InnoDB[0m
+  [4;35;1mBare1Article Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `articles`[0m
+  [4;36;1mBare1Article Create (6.6ms)[0m   [0;1mINSERT INTO `articles` (`permalink`, `body_html`, `allow_comments`, `text_filter`, `created_at`, `title`, `author`, `body`, `allow_pings`, `excerpt`, `published`, `updated_at`, `extended_html`, `extended`, `keywords`) VALUES('hello-world', NULL, 1, NULL, '2009-09-21 18:03:36', 'Hello World!', 'Mr Typo', 'Welcome to Typo. This is your first article. Edit or delete it, then start blogging!', 1, NULL, 1, '2009-09-21 18:03:36', NULL, NULL, NULL)[0m
+  [4;35;1mSQL (4.4ms)[0m   [0mCREATE TABLE `blacklist_patterns` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `type` varchar(255), `pattern` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (7.9ms)[0m   [0;1mCREATE INDEX `index_blacklist_patterns_on_pattern` ON `blacklist_patterns` (`pattern`)[0m
+  [4;35;1mSQL (5.0ms)[0m   [0mCREATE TABLE `comments` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `title` varchar(255), `author` varchar(255), `email` varchar(255), `url` varchar(255), `ip` varchar(255), `body` text, `body_html` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;36;1mSQL (7.3ms)[0m   [0;1mCREATE INDEX `index_comments_on_article_id` ON `comments` (`article_id`)[0m
+  [4;35;1mSQL (3.7ms)[0m   [0mCREATE TABLE `pings` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `url` varchar(255), `created_at` datetime) ENGINE=InnoDB[0m
+  [4;36;1mSQL (7.6ms)[0m   [0;1mCREATE INDEX `index_pings_on_article_id` ON `pings` (`article_id`)[0m
+  [4;35;1mSQL (5.2ms)[0m   [0mCREATE TABLE `resources` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `size` int(11), `filename` varchar(255), `mime` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;36;1mSQL (3.3ms)[0m   [0;1mCREATE TABLE `sessions` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `sessid` varchar(255), `data` text, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;35;1mSQL (5.3ms)[0m   [0mCREATE TABLE `settings` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `value` varchar(255), `position` int(11)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (3.1ms)[0m   [0;1mCREATE TABLE `trackbacks` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `blog_name` varchar(255), `title` varchar(255), `excerpt` varchar(255), `url` varchar(255), `ip` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;35;1mSQL (8.6ms)[0m   [0mCREATE INDEX `index_trackbacks_on_article_id` ON `trackbacks` (`article_id`)[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('1')[0m
+Migrating to AddUserEmail (2)
+  [4;36;1mSQL (9.5ms)[0m   [0;1mALTER TABLE `users` ADD `email` text[0m
+  [4;35;1mSQL (7.2ms)[0m   [0mALTER TABLE `users` ADD `name` text[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddUserEmail::BareUser Load (0.2ms)[0m   [0mSELECT * FROM `users` [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (1.0ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('2')[0m
+Migrating to AddArticleUserId (3)
+  [4;36;1mSQL (9.3ms)[0m   [0;1mALTER TABLE `articles` ADD `user_id` int(11)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mAddArticleUserId::BareArticle Load (0.3ms)[0m   [0;1mSELECT * FROM `articles` [0m
+  [4;35;1mAddArticleUserId::BareArticle Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `articles`[0m
+  [4;36;1mAddArticleUserId::BareUser Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mAddArticleUserId::BareUser Load (0.2ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`name` = 'Mr Typo') LIMIT 1[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mAddArticleUserId::BareUser Load (0.1ms)[0m   [0mSELECT * FROM `users` LIMIT 1[0m
+  [4;36;1mAddArticleUserId::BareArticle Load (1.4ms)[0m   [0;1mSELECT * FROM `articles` WHERE (user_id IS NULL) [0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mAddArticleUserId::BareArticle Update (1.3ms)[0m   [0;1mUPDATE `articles` SET `updated_at` = '2009-09-21 18:03:36', `user_id` = 1 WHERE `id` = 1[0m
+  [4;35;1mSQL (1.4ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('3')[0m
+Migrating to AddSidebars (4)
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (4.2ms)[0m   [0;1mCREATE TABLE `sidebars` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `controller` varchar(255), `active_position` int(11), `active_config` text, `staged_position` int(11), `staged_config` text) ENGINE=InnoDB[0m
+  [4;35;1mBare4Sidebar Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+  [4;36;1mBare4Sidebar Create (0.7ms)[0m   [0;1mINSERT INTO `sidebars` (`staged_position`, `active_config`, `active_position`, `staged_config`, `controller`) VALUES(NULL, '--- !map:HashWithIndifferentAccess \nmaximum_pages: \"10\"\n', 0, NULL, 'page')[0m
+  [4;35;1mBare4Sidebar Create (0.8ms)[0m   [0mINSERT INTO `sidebars` (`staged_position`, `active_config`, `active_position`, `staged_config`, `controller`) VALUES(NULL, '--- !map:HashWithIndifferentAccess \nempty: false\ncount: true\n', 1, NULL, 'category')[0m
+  [4;36;1mBare4Sidebar Create (0.4ms)[0m   [0;1mINSERT INTO `sidebars` (`staged_position`, `active_config`, `active_position`, `staged_config`, `controller`) VALUES(NULL, '--- !map:HashWithIndifferentAccess \nshow_count: true\ncount: \"10\"\n', 2, NULL, 'archives')[0m
+  [4;35;1mBare4Sidebar Create (0.4ms)[0m   [0mINSERT INTO `sidebars` (`staged_position`, `active_config`, `active_position`, `staged_config`, `controller`) VALUES(NULL, '--- !map:HashWithIndifferentAccess \n title: Links\n body: |+\n <ul>\n <li><a href=\"http://www.typosphere.org\" title=\"Typo\">Typosphere</a></li>\n <li><a href=\"http://typogarden.org\">Typogarden</a></li>\n <li><a href=\"http://www.bofh.org.uk\" title=\"Just a Summary\">Just A Summary</a></li>\n <li><a href=\"http://fredericdevillamil.com\" title=\"Frédéric de Villamil\">Ergonomie, Rails et bonnes pratiques du web</a></li>\n <li><a href=\"/admin\">Admin</a></li>\n </ul>', 3, NULL, 'static')[0m
+  [4;36;1mBare4Sidebar Create (1.6ms)[0m   [0;1mINSERT INTO `sidebars` (`staged_position`, `active_config`, `active_position`, `staged_config`, `controller`) VALUES(NULL, '--- !map:HashWithIndifferentAccess \nformat: rss20\ntrackbacks: true\ncomments: true\narticles: true\n', 4, NULL, 'xml')[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('4')[0m
+Migrating to AddCacheTable (5)
+  [4;35;1mSQL (3.9ms)[0m   [0mCREATE TABLE `page_caches` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (8.2ms)[0m   [0;1mCREATE INDEX `index_page_caches_on_name` ON `page_caches` (`name`)[0m
+  [4;35;1mSQL (0.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('5')[0m
+Migrating to AddPages (6)
+  [4;36;1mSQL (5.7ms)[0m   [0;1mCREATE TABLE `pages` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `user_id` int(11), `body` text, `body_html` text, `text_filter` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('6')[0m
+Migrating to AddPermalink (7)
+  [4;36;1mSQL (7.3ms)[0m   [0;1mALTER TABLE `categories` ADD `permalink` varchar(255)[0m
+  [4;35;1mSQL (8.3ms)[0m   [0mCREATE INDEX `index_categories_on_permalink` ON `categories` (`permalink`)[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddPermalink::BareCategory Load (0.3ms)[0m   [0mSELECT * FROM `categories` [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mBEGIN[0m
+  [4;36;1mAddPermalink::BareArticle Load (0.2ms)[0m   [0;1mSELECT * FROM `articles` [0m
+  [4;35;1mAddPermalink::BareArticle Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `articles`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('7')[0m
+Migrating to AddPageTitle (8)
+  [4;36;1mSQL (7.4ms)[0m   [0;1mALTER TABLE `pages` ADD `title` varchar(255)[0m
+  [4;35;1mBare8Page Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `pages`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBare8Page Create (0.2ms)[0m   [0mINSERT INTO `pages` (`name`, `body_html`, `text_filter`, `created_at`, `body`, `title`, `updated_at`, `user_id`) VALUES('about', NULL, NULL, '2009-09-21 18:03:36', 'This is an example of a Typo page. You can edit this to write information about yourself or your site so readers know who you are. You can create as many pages as this one as you like and manage all of your content inside Typo.', 'about', '2009-09-21 18:03:36', 1)[0m
+  [4;36;1mSQL (1.5ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('8')[0m
+Migrating to AddArticleGuid (9)
+  [4;36;1mSQL (10.6ms)[0m   [0;1mALTER TABLE `articles` ADD `guid` varchar(255)[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('9')[0m
+Migrating to AddTags (10)
+  [4;36;1mSQL (3.3ms)[0m   [0;1mCREATE TABLE `tags` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;35;1mSQL (5.4ms)[0m   [0mCREATE TABLE `articles_tags` (`article_id` int(11), `tag_id` int(11)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('10')[0m
+Migrating to AddArticleId (11)
+  [4;35;1mSQL (8.7ms)[0m   [0mALTER TABLE `resources` ADD `article_id` int(11)[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('11')[0m
+Migrating to EnlargeSettings (12)
+  [4;35;1mSQL (0.7ms)[0m   [0mSHOW FIELDS FROM `settings`[0m
+  [4;36;1mSQL (7.9ms)[0m   [0;1mALTER TABLE `settings` CHANGE `name` `name` varchar(255) DEFAULT NULL[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mSHOW FIELDS FROM `settings`[0m
+  [4;36;1mSQL (9.6ms)[0m   [0;1mALTER TABLE `settings` CHANGE `value` `value` varchar(255) DEFAULT NULL[0m
+  [4;35;1mSQL (2.0ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('12')[0m
+Migrating to AddTextfilters (13)
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mSQL (675.3ms)[0m   [0mCREATE TABLE `text_filters` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255), `markup` varchar(255), `filters` text, `params` text) ENGINE=InnoDB[0m
+  [4;36;1mBare13TextFilter Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `text_filters`[0m
+  [4;35;1mBare13TextFilter Create (2.3ms)[0m   [0mINSERT INTO `text_filters` (`name`, `filters`, `description`, `markup`, `params`) VALUES('none', '--- []\n\n', 'None', 'none', '--- {}\n\n')[0m
+  [4;36;1mBare13TextFilter Create (0.8ms)[0m   [0;1mINSERT INTO `text_filters` (`name`, `filters`, `description`, `markup`, `params`) VALUES('markdown', '--- []\n\n', 'Markdown', 'markdown', '--- {}\n\n')[0m
+  [4;35;1mBare13TextFilter Create (0.4ms)[0m   [0mINSERT INTO `text_filters` (`name`, `filters`, `description`, `markup`, `params`) VALUES('smartypants', '--- \n- :smartypants\n', 'SmartyPants', 'none', '--- {}\n\n')[0m
+  [4;36;1mBare13TextFilter Create (2.8ms)[0m   [0;1mINSERT INTO `text_filters` (`name`, `filters`, `description`, `markup`, `params`) VALUES('markdown smartypants', '--- \n- :smartypants\n', 'Markdown with SmartyPants', 'markdown', '--- {}\n\n')[0m
+  [4;35;1mBare13TextFilter Create (0.6ms)[0m   [0mINSERT INTO `text_filters` (`name`, `filters`, `description`, `markup`, `params`) VALUES('textile', '--- []\n\n', 'Textile', 'textile', '--- {}\n\n')[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('13')[0m
+Migrating to MoveTextFilterToTextFilterId (14)
+  [4;36;1mMoveTextFilterToTextFilterId::BareTextFilter Load (0.3ms)[0m   [0;1mSELECT * FROM `text_filters` [0m
+  [4;35;1mMoveTextFilterToTextFilterId::BareTextFilter Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `text_filters`[0m
+  [4;36;1mSQL (16.8ms)[0m   [0;1mALTER TABLE `articles` ADD `text_filter_id` int(11)[0m
+  [4;35;1mSQL (8.8ms)[0m   [0mALTER TABLE `pages` ADD `text_filter_id` int(11)[0m
+  [4;36;1mMoveTextFilterToTextFilterId::BareArticle Load (0.3ms)[0m   [0;1mSELECT * FROM `articles` [0m
+  [4;35;1mMoveTextFilterToTextFilterId::BarePage Load (0.2ms)[0m   [0mSELECT * FROM `pages` [0m
+  [4;36;1mMoveTextFilterToTextFilterId::BareArticle Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `articles`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mMoveTextFilterToTextFilterId::BareArticle Update (0.3ms)[0m   [0;1mUPDATE `articles` SET `updated_at` = '2009-09-21 18:03:37', `text_filter_id` = 5 WHERE `id` = 1[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mCOMMIT[0m
+  [4;36;1mMoveTextFilterToTextFilterId::BarePage Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `pages`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mMoveTextFilterToTextFilterId::BarePage Update (0.2ms)[0m   [0;1mUPDATE `pages` SET `updated_at` = '2009-09-21 18:03:37', `text_filter_id` = 5 WHERE `id` = 1[0m
+  [4;35;1mSQL (0.5ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (11.3ms)[0m   [0;1mALTER TABLE `articles` DROP `text_filter`[0m
+  [4;35;1mSQL (10.7ms)[0m   [0mALTER TABLE `pages` DROP `text_filter`[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('14')[0m
+Migrating to ConvertMysqlToInnodb (15)
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (14.8ms)[0m   [0;1mALTER TABLE articles ENGINE=InnoDB[0m
+  [4;35;1mSQL (8.2ms)[0m   [0mALTER TABLE articles_tags ENGINE=InnoDB[0m
+  [4;36;1mSQL (13.2ms)[0m   [0;1mALTER TABLE blacklist_patterns ENGINE=InnoDB[0m
+  [4;35;1mSQL (10.7ms)[0m   [0mALTER TABLE categories ENGINE=InnoDB[0m
+  [4;36;1mSQL (14.4ms)[0m   [0;1mALTER TABLE comments ENGINE=InnoDB[0m
+  [4;35;1mSQL (18.0ms)[0m   [0mALTER TABLE page_caches ENGINE=InnoDB[0m
+  [4;36;1mSQL (12.7ms)[0m   [0;1mALTER TABLE pages ENGINE=InnoDB[0m
+  [4;35;1mSQL (12.5ms)[0m   [0mALTER TABLE pings ENGINE=InnoDB[0m
+  [4;36;1mSQL (16.4ms)[0m   [0;1mALTER TABLE resources ENGINE=InnoDB[0m
+  [4;35;1mSQL (16.6ms)[0m   [0mALTER TABLE schema_migrations ENGINE=InnoDB[0m
+  [4;36;1mSQL (17.2ms)[0m   [0;1mALTER TABLE sessions ENGINE=InnoDB[0m
+  [4;35;1mSQL (17.6ms)[0m   [0mALTER TABLE settings ENGINE=InnoDB[0m
+  [4;36;1mSQL (66.7ms)[0m   [0;1mALTER TABLE sidebars ENGINE=InnoDB[0m
+  [4;35;1mSQL (56.3ms)[0m   [0mALTER TABLE tags ENGINE=InnoDB[0m
+  [4;36;1mSQL (50.2ms)[0m   [0;1mALTER TABLE text_filters ENGINE=InnoDB[0m
+  [4;35;1mSQL (58.8ms)[0m   [0mALTER TABLE trackbacks ENGINE=InnoDB[0m
+  [4;36;1mSQL (53.1ms)[0m   [0;1mALTER TABLE users ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('15')[0m
+Migrating to FixIsPrimaryPostgres (16)
+  [4;36;1mSQL (0.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('16')[0m
+Migrating to AddCommentUserId (17)
+  [4;35;1mAddCommentUserId::BareUser Load (0.3ms)[0m   [0mSELECT * FROM `users` [0m
+  [4;36;1mSQL (43.4ms)[0m   [0;1mALTER TABLE `comments` ADD `user_id` int(11)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mAddCommentUserId::BareComment Load (0.3ms)[0m   [0;1mSELECT * FROM `comments` [0m
+  [4;35;1mSQL (0.1ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('17')[0m
+Migrating to AddGuids (18)
+  [4;35;1mSQL (43.5ms)[0m   [0mALTER TABLE `comments` ADD `guid` varchar(255)[0m
+  [4;36;1mSQL (59.2ms)[0m   [0;1mALTER TABLE `trackbacks` ADD `guid` varchar(255)[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('18')[0m
+Migrating to AddWhiteboardsToContent (19)
+  [4;36;1mSQL (38.6ms)[0m   [0;1mALTER TABLE `articles` ADD `whiteboard` text[0m
+  [4;35;1mSQL (40.4ms)[0m   [0mALTER TABLE `comments` ADD `whiteboard` text[0m
+  [4;36;1mSQL (22.9ms)[0m   [0;1mALTER TABLE `pages` ADD `whiteboard` text[0m
+  [4;35;1mSQL (0.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('19')[0m
+Migrating to SuperclassArticles (20)
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mSQL (19.6ms)[0m   [0mCREATE TABLE `contents` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `type` varchar(255), `title` varchar(255), `author` varchar(255), `body` text, `body_html` text, `extended` text, `excerpt` text, `keywords` varchar(255), `allow_comments` int(11), `allow_pings` int(11), `published` int(11) DEFAULT 1, `created_at` datetime, `updated_at` datetime, `extended_html` text, `user_id` int(11), `permalink` varchar(255), `guid` varchar(255), `text_filter_id` int(11), `whiteboard` text) ENGINE=InnoDB[0m
+  [4;36;1mBare20Article Load (0.3ms)[0m   [0;1mSELECT * FROM `articles` [0m
+  [4;35;1mBare20Article Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `articles`[0m
+  [4;36;1mBare20Content Columns (1.2ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mBare20Content Create (0.7ms)[0m   [0mINSERT INTO `contents` (`permalink`, `body_html`, `allow_comments`, `created_at`, `title`, `author`, `body`, `allow_pings`, `guid`, `excerpt`, `published`, `updated_at`, `text_filter_id`, `id`, `type`, `extended_html`, `user_id`, `extended`, `whiteboard`, `keywords`) VALUES('hello-world', NULL, 1, '2009-09-21 18:03:36', 'Hello World!', 'Mr Typo', 'Welcome to Typo. This is your first article. Edit or delete it, then start blogging!', 1, NULL, NULL, 1, '2009-09-21 18:03:38', 5, 1, 'Article', NULL, 1, NULL, NULL, NULL)[0m
+  [4;36;1mSQL (34.0ms)[0m   [0;1mDROP INDEX `index_articles_on_permalink` ON articles[0m
+  [4;35;1mSQL (38.4ms)[0m   [0mDROP TABLE `articles`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (3.3ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('20')[0m
+Migrating to SuperclassComments (21)
+  [4;36;1mSQL (19.3ms)[0m   [0;1mALTER TABLE `contents` ADD `article_id` int(11)[0m
+  [4;35;1mSQL (49.4ms)[0m   [0mALTER TABLE `contents` ADD `email` varchar(255)[0m
+  [4;36;1mSQL (65.5ms)[0m   [0;1mALTER TABLE `contents` ADD `url` varchar(255)[0m
+  [4;35;1mSQL (81.1ms)[0m   [0mALTER TABLE `contents` ADD `ip` varchar(255)[0m
+  [4;36;1mSQL (73.4ms)[0m   [0;1mCREATE INDEX `index_contents_on_article_id` ON `contents` (`article_id`)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mSuperclassComments::BareComment Load (0.3ms)[0m   [0;1mSELECT * FROM `comments` [0m
+  [4;35;1mSQL (0.1ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (55.8ms)[0m   [0;1mDROP INDEX `index_comments_on_article_id` ON comments[0m
+  [4;35;1mSQL (1.8ms)[0m   [0mDROP TABLE `comments`[0m
+  [4;36;1mSQL (0.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('21')[0m
+Migrating to SuperclassTrackbacks (22)
+  [4;35;1mSQL (85.0ms)[0m   [0mALTER TABLE `contents` ADD `blog_name` varchar(255)[0m
+  [4;36;1mSQL (52.4ms)[0m   [0;1mDROP INDEX `index_trackbacks_on_article_id` ON trackbacks[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mSuperclassTrackbacks::BareTrackback Load (0.3ms)[0m   [0;1mSELECT * FROM `trackbacks` [0m
+  [4;35;1mSQL (0.1ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (3.1ms)[0m   [0;1mDROP TABLE `trackbacks`[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('22')[0m
+Migrating to SuperclassPages (23)
+  [4;36;1mSQL (56.9ms)[0m   [0;1mALTER TABLE `contents` ADD `name` varchar(255)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mBare23Page Load (0.3ms)[0m   [0;1mSELECT * FROM `pages` [0m
+  [4;35;1mBare23Page Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `pages`[0m
+  [4;36;1mBare23Content Columns (1.4ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mBare23Content Create (0.3ms)[0m   [0mINSERT INTO `contents` (`permalink`, `name`, `body_html`, `allow_comments`, `created_at`, `blog_name`, `title`, `author`, `body`, `allow_pings`, `guid`, `excerpt`, `published`, `updated_at`, `url`, `text_filter_id`, `type`, `extended_html`, `user_id`, `article_id`, `extended`, `whiteboard`, `ip`, `keywords`, `email`) VALUES(NULL, 'about', NULL, NULL, '2009-09-21 18:03:36', NULL, 'about', NULL, 'This is an example of a Typo page. You can edit this to write information about yourself or your site so readers know who you are. You can create as many pages as this one as you like and manage all of your content inside Typo.', NULL, NULL, NULL, 1, '2009-09-21 18:03:39', NULL, 5, 'Page', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL)[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (1.4ms)[0m   [0mDROP TABLE `pages`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('23')[0m
+Migrating to CleanupContents (24)
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mBare24Article Load (0.3ms)[0m   [0;1mSELECT * FROM `contents` WHERE (type = 'Article') [0m
+  [4;35;1mBare24Article Columns (1.3ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mBare24Article Update (0.3ms)[0m   [0;1mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:39', `guid` = '5d2955d8-31b6-4c47-81a2-88c1cbe00d48' WHERE `id` = 1[0m
+  [4;35;1mSQL (3.1ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.8ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('24')[0m
+Migrating to AddItunesMetadata (25)
+  [4;35;1mSQL (46.7ms)[0m   [0mALTER TABLE `resources` ADD `itunes_metadata` tinyint(1)[0m
+  [4;36;1mSQL (63.0ms)[0m   [0;1mALTER TABLE `resources` ADD `itunes_author` varchar(255)[0m
+  [4;35;1mSQL (23.7ms)[0m   [0mALTER TABLE `resources` ADD `itunes_subtitle` varchar(255)[0m
+  [4;36;1mSQL (50.3ms)[0m   [0;1mALTER TABLE `resources` ADD `itunes_duration` int(11)[0m
+  [4;35;1mSQL (74.5ms)[0m   [0mALTER TABLE `resources` ADD `itunes_summary` text[0m
+  [4;36;1mSQL (71.2ms)[0m   [0;1mALTER TABLE `resources` ADD `itunes_keywords` varchar(255)[0m
+  [4;35;1mSQL (58.9ms)[0m   [0mALTER TABLE `resources` ADD `itunes_category` varchar(255)[0m
+  [4;36;1mSQL (32.1ms)[0m   [0;1mALTER TABLE `resources` ADD `itunes_explicit` tinyint(1)[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('25')[0m
+Migrating to AddRedirectTable (26)
+  [4;36;1mSQL (4.7ms)[0m   [0;1mCREATE TABLE `redirects` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `from_path` varchar(255), `to_path` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (5.4ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('26')[0m
+Migrating to SetCommentPublishedFlag (27)
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBare27Content Load (0.3ms)[0m   [0mSELECT * FROM `contents` WHERE (type = 'Comment') [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (3.3ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('27')[0m
+Migrating to RenameRedirectTo (28)
+  [4;36;1mRedirect Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `redirects`[0m
+  [4;35;1mSQL (0.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('28')[0m
+Migrating to AddUserNotification (29)
+  [4;36;1mSQL (28.7ms)[0m   [0;1mALTER TABLE `users` ADD `notify_via_email` tinyint(1)[0m
+  [4;35;1mSQL (32.9ms)[0m   [0mALTER TABLE `users` ADD `notify_on_new_articles` tinyint(1)[0m
+  [4;36;1mSQL (24.4ms)[0m   [0;1mALTER TABLE `users` ADD `notify_on_comments` tinyint(1)[0m
+  [4;35;1mSQL (47.5ms)[0m   [0mALTER TABLE `users` ADD `notify_watch_my_articles` tinyint(1)[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBare29User Load (0.3ms)[0m   [0mSELECT * FROM `users` [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('29')[0m
+Migrating to IndexSessions (30)
+  [4;36;1mSQL (36.7ms)[0m   [0;1mCREATE INDEX `index_sessions_on_sessid` ON `sessions` (`sessid`)[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('30')[0m
+Migrating to AddNotificationsTable (31)
+  [4;36;1mSQL (20.6ms)[0m   [0;1mCREATE TABLE `notifications` (`notify_user_id` int(11), `notify_content_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;35;1mSQL (6.3ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('31')[0m
+Migrating to AddJabberNotification (32)
+  [4;36;1mSQL (11.9ms)[0m   [0;1mALTER TABLE `users` ADD `notify_via_jabber` tinyint(1)[0m
+  [4;35;1mSQL (9.2ms)[0m   [0mALTER TABLE `users` ADD `jabber` varchar(255)[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('32')[0m
+Migrating to AddCountCaching (33)
+  [4;35;1mSQL (36.4ms)[0m   [0mALTER TABLE `contents` ADD `comments_count` int(11)[0m
+  [4;36;1mSQL (55.0ms)[0m   [0;1mALTER TABLE `contents` ADD `trackbacks_count` int(11)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mBare33Content Load (0.4ms)[0m   [0;1mSELECT * FROM `contents` [0m
+  [4;35;1mBare33Content Columns (1.4ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mBare33Content Load (0.3ms)[0m   [0;1mSELECT * FROM `contents` WHERE (article_id = 1 and type = 'Comment') [0m
+  [4;35;1mBare33Content Load (0.3ms)[0m   [0mSELECT * FROM `contents` WHERE (article_id = 1 and type = 'Trackback') [0m
+  [4;36;1mBare33Content Update (0.2ms)[0m   [0;1mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:40', `trackbacks_count` = 0, `comments_count` = 0 WHERE `id` = 1[0m
+  [4;35;1mBare33Content Load (0.3ms)[0m   [0mSELECT * FROM `contents` WHERE (article_id = 2 and type = 'Comment') [0m
+  [4;36;1mBare33Content Load (0.2ms)[0m   [0;1mSELECT * FROM `contents` WHERE (article_id = 2 and type = 'Trackback') [0m
+  [4;35;1mBare33Content Update (0.2ms)[0m   [0mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:40', `trackbacks_count` = 0, `comments_count` = 0 WHERE `id` = 2[0m
+  [4;36;1mSQL (1.7ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('33')[0m
+Migrating to BoolifyPublished (34)
+  [4;36;1mSQL (1.4ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mSHOW COLUMNS FROM `contents` LIKE 'published'[0m
+  [4;36;1mSQL (25.5ms)[0m   [0;1mALTER TABLE `contents` CHANGE `published` `old_pub` int(11) DEFAULT 1[0m
+  [4;35;1mSQL (50.3ms)[0m   [0mALTER TABLE `contents` ADD `published` tinyint(1) DEFAULT 1[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBare34Content Load (0.4ms)[0m   [0mSELECT * FROM `contents` [0m
+  [4;36;1mBare34Content Columns (1.4ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (42.7ms)[0m   [0;1mALTER TABLE `contents` DROP `old_pub`[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('34')[0m
+Migrating to BoolifyContentAllowFoo (35)
+  [4;36;1mSQL (1.5ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mSQL (0.5ms)[0m   [0mSHOW COLUMNS FROM `contents` LIKE 'allow_pings'[0m
+  [4;36;1mSQL (20.2ms)[0m   [0;1mALTER TABLE `contents` CHANGE `allow_pings` `old_ap` int(11) DEFAULT NULL[0m
+  [4;35;1mSQL (21.5ms)[0m   [0mALTER TABLE `contents` ADD `allow_pings` tinyint(1)[0m
+  [4;36;1mSQL (1.5ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mSQL (0.5ms)[0m   [0mSHOW COLUMNS FROM `contents` LIKE 'allow_comments'[0m
+  [4;36;1mSQL (65.3ms)[0m   [0;1mALTER TABLE `contents` CHANGE `allow_comments` `old_ac` int(11) DEFAULT NULL[0m
+  [4;35;1mSQL (47.0ms)[0m   [0mALTER TABLE `contents` ADD `allow_comments` tinyint(1)[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBare35Content Load (0.4ms)[0m   [0mSELECT * FROM `contents` [0m
+  [4;36;1mBare35Content Columns (1.4ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mBare35Content Update (0.3ms)[0m   [0mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:40', `allow_pings` = 1, `allow_comments` = 1 WHERE `id` = 1[0m
+  [4;36;1mSQL (1.6ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (17.2ms)[0m   [0mALTER TABLE `contents` DROP `old_ap`[0m
+  [4;36;1mSQL (38.7ms)[0m   [0;1mALTER TABLE `contents` DROP `old_ac`[0m
+  [4;35;1mSQL (3.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('35')[0m
+Migrating to AddTagDisplayName (36)
+  [4;36;1mSQL (36.0ms)[0m   [0;1mALTER TABLE `tags` ADD `display_name` varchar(255)[0m
+  [4;35;1mAddTagDisplayName::Tag Load (0.2ms)[0m   [0mSELECT * FROM `tags` [0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('36')[0m
+Migrating to EnlargeIpField (37)
+  [4;35;1mSQL (1.5ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mSQL (26.9ms)[0m   [0;1mALTER TABLE `contents` CHANGE `ip` `ip` varchar(40) DEFAULT NULL[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('37')[0m
+Migrating to AddBlogObject (38)
+  [4;36;1mSQL (25.9ms)[0m   [0;1mCREATE TABLE `blogs` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `dummy` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (50.0ms)[0m   [0mALTER TABLE `settings` ADD `blog_id` int(11)[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBare38Blog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mBare38Blog Create (0.2ms)[0m   [0;1mINSERT INTO `blogs` (`dummy`) VALUES(NULL)[0m
+  [4;35;1mBare38Setting Load (0.2ms)[0m   [0mSELECT * FROM `settings` [0m
+  [4;36;1mBare38Setting Load (0.1ms)[0m   [0;1mSELECT * FROM `settings` [0m
+  [4;35;1mSQL (2.7ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (25.5ms)[0m   [0;1mALTER TABLE `blogs` DROP `dummy`[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('38')[0m
+Migrating to SerializeBlogAttributes (39)
+  [4;36;1mSQL (20.9ms)[0m   [0;1mALTER TABLE `blogs` ADD `settings` text[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mSerializeBlogAttributes::BareBlog Load (0.2ms)[0m   [0;1mSELECT * FROM `blogs` [0m
+  [4;35;1mSerializeBlogAttributes::BareBlog Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `settings`[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'limit_article_display') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'ping_urls') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'theme') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'sp_allow_non_ajax_comments') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'sp_global') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'geourl_location') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'link_to_author') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'limit_rss_display') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'comment_text_filter') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_owner') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_summary') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'use_gravatar') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_email') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'sp_url_limit') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'email_from') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'default_allow_comments') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_name') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'jabber_address') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'send_outbound_pings') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'text_filter') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_author') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'sp_article_auto_close') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'show_extended_on_rss') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'default_allow_pings') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_copyright') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_explicit') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'blog_name') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'jabber_password') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0mSELECT * FROM `settings` WHERE (`settings`.`name` = 'itunes_subtitle') AND (blog_id = 1) LIMIT 1[0m
+  [4;36;1mSerializeBlogAttributes::BareSetting Load (0.2ms)[0m   [0;1mSELECT * FROM `settings` WHERE (`settings`.`name` = 'blog_subtitle') AND (blog_id = 1) LIMIT 1[0m
+  [4;35;1mSerializeBlogAttributes::BareBlog Update (0.2ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- {}\n\n' WHERE `id` = 1[0m
+  [4;36;1mSQL (3.7ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (1.8ms)[0m   [0mDROP TABLE `settings`[0m
+  [4;36;1mSQL (0.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('39')[0m
+Migrating to AttachContentToBlog (40)
+  [4;35;1mSQL (19.1ms)[0m   [0mALTER TABLE `contents` ADD `blog_id` int(11)[0m
+  [4;36;1mAttachContentToBlog::BareBlog Load (0.2ms)[0m   [0;1mSELECT * FROM `blogs` LIMIT 1[0m
+  [4;35;1mAttachContentToBlog::BareBlog Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mAttachContentToBlog::BareContent Load (0.6ms)[0m   [0;1mSELECT * FROM `contents` [0m
+  [4;35;1mAttachContentToBlog::BareContent Columns (1.4ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAttachContentToBlog::BareContent Update (0.2ms)[0m   [0mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:40', `blog_id` = 1 WHERE `id` = 1[0m
+  [4;36;1mSQL (0.7ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mBEGIN[0m
+  [4;36;1mAttachContentToBlog::BareContent Update (0.2ms)[0m   [0;1mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:40', `blog_id` = 1 WHERE `id` = 2[0m
+  [4;35;1mSQL (7.5ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (1.3ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mSQL (26.8ms)[0m   [0mALTER TABLE `contents` CHANGE `blog_id` `blog_id` int(11) NOT NULL[0m
+  [4;36;1mSQL (47.1ms)[0m   [0;1mCREATE INDEX `index_contents_on_blog_id` ON `contents` (`blog_id`)[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('40')[0m
+Migrating to FixupDefaultSidebars (41)
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mFixupDefaultSidebars::BareSidebar Load (0.3ms)[0m   [0mSELECT * FROM `sidebars` WHERE (staged_position IS NULL) [0m
+  [4;36;1mFixupDefaultSidebars::BareSidebar Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `sidebars`[0m
+  [4;35;1mFixupDefaultSidebars::BareSidebar Update (0.2ms)[0m   [0mUPDATE `sidebars` SET `staged_position` = 0 WHERE `id` = 1[0m
+  [4;36;1mFixupDefaultSidebars::BareSidebar Update (0.1ms)[0m   [0;1mUPDATE `sidebars` SET `staged_position` = 1 WHERE `id` = 2[0m
+  [4;35;1mFixupDefaultSidebars::BareSidebar Update (0.1ms)[0m   [0mUPDATE `sidebars` SET `staged_position` = 2 WHERE `id` = 3[0m
+  [4;36;1mFixupDefaultSidebars::BareSidebar Update (0.1ms)[0m   [0;1mUPDATE `sidebars` SET `staged_position` = 3 WHERE `id` = 4[0m
+  [4;35;1mFixupDefaultSidebars::BareSidebar Update (0.1ms)[0m   [0mUPDATE `sidebars` SET `staged_position` = 4 WHERE `id` = 5[0m
+  [4;36;1mSQL (1.7ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('41')[0m
+Migrating to RemoveSidebarStagedConfig (42)
+  [4;36;1mSQL (38.9ms)[0m   [0;1mALTER TABLE `sidebars` DROP `staged_config`[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW COLUMNS FROM `sidebars` LIKE 'active_config'[0m
+  [4;35;1mSQL (58.5ms)[0m   [0mALTER TABLE `sidebars` CHANGE `active_config` `config` text DEFAULT NULL[0m
+  [4;36;1mSQL (1.8ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('42')[0m
+Migrating to CreateTriggers (43)
+  [4;35;1mSQL (16.8ms)[0m   [0mCREATE TABLE `triggers` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `pending_item_id` int(11), `pending_item_type` varchar(255), `due_at` datetime, `trigger_method` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('43')[0m
+Migrating to AddPublishedAtToContent (44)
+  [4;35;1mSQL (30.8ms)[0m   [0mALTER TABLE `contents` ADD `published_at` datetime[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddPublishedAtToContent::Content Load (0.4ms)[0m   [0mSELECT * FROM `contents` [0m
+  [4;36;1mAddPublishedAtToContent::Content Columns (1.4ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mAddPublishedAtToContent::Content Update (0.3ms)[0m   [0mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:41', `published_at` = '2009-09-21 18:03:36' WHERE `id` = 1[0m
+  [4;36;1mAddPublishedAtToContent::Content Update (0.2ms)[0m   [0;1mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:41', `published_at` = '2009-09-21 18:03:36' WHERE `id` = 2[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.8ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('44')[0m
+Migrating to FixContentsPublishedDefault (45)
+  [4;35;1mSQL (1.5ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mSQL (372.7ms)[0m   [0;1mALTER TABLE `contents` CHANGE `published` `published` tinyint(1) DEFAULT 0[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('45')[0m
+Migrating to FixupForthcomingPublications (46)
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mFixupForthcomingPublications::Article Columns (1.6ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mFixupForthcomingPublications::Article Load (0.4ms)[0m   [0;1mSELECT * FROM `contents` WHERE (published = 1 AND published_at > '2009-09-21 18:03:41') AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mSQL (0.1ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('46')[0m
+Migrating to AddContentStateField (47)
+  [4;35;1mSQL (12.9ms)[0m   [0mALTER TABLE `contents` ADD `state` text[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddContentStateField::Content Load (0.4ms)[0m   [0mSELECT * FROM `contents` [0m
+  [4;36;1mAddContentStateField::Content Columns (1.4ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mAddContentStateField::Content Update (0.3ms)[0m   [0mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:41', `state` = 'Published' WHERE `id` = 1[0m
+  [4;36;1mAddContentStateField::Content Update (0.2ms)[0m   [0;1mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:41', `state` = 'Published' WHERE `id` = 2[0m
+  [4;35;1mSQL (0.5ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('47')[0m
+Migrating to RemoveCountCaching (48)
+  [4;35;1mSQL (25.2ms)[0m   [0mALTER TABLE `contents` DROP `comments_count`[0m
+  [4;36;1mSQL (12.7ms)[0m   [0;1mALTER TABLE `contents` DROP `trackbacks_count`[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('48')[0m
+Migrating to MoveFeedbackToNewStateMachine (49)
+  [4;36;1mMoveFeedbackToNewStateMachine::Content Load (0.4ms)[0m   [0;1mSELECT * FROM `contents` WHERE (type = 'Trackback' or type = 'Comment') [0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('49')[0m
+Migrating to AddStatusConfirmedFieldToContent (50)
+  [4;36;1mSQL (18.0ms)[0m   [0;1mALTER TABLE `contents` ADD `status_confirmed` tinyint(1)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mAddStatusConfirmedFieldToContent::Content Load (0.4ms)[0m   [0;1mSELECT * FROM `contents` [0m
+  [4;35;1mAddStatusConfirmedFieldToContent::Content Columns (1.4ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mAddStatusConfirmedFieldToContent::Content Update (0.3ms)[0m   [0;1mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:41', `status_confirmed` = 0 WHERE `id` = 1[0m
+  [4;35;1mAddStatusConfirmedFieldToContent::Content Update (0.2ms)[0m   [0mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:41', `status_confirmed` = 0 WHERE `id` = 2[0m
+  [4;36;1mSQL (4.4ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('50')[0m
+Migrating to FixCanonicalServerUrl (51)
+  [4;36;1mFixCanonicalServerUrl::Blog Load (63.2ms)[0m   [0;1mSELECT * FROM `blogs` [0m
+  [4;35;1mFixCanonicalServerUrl::Blog Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mFixCanonicalServerUrl::Blog Update (0.2ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+  [4;36;1mSQL (0.5ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('51')[0m
+Migrating to RemoveCachedHtml (52)
+  [4;36;1mSQL (12.4ms)[0m   [0;1mALTER TABLE `contents` DROP `body_html`[0m
+  [4;35;1mSQL (11.0ms)[0m   [0mALTER TABLE `contents` DROP `extended_html`[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('52')[0m
+Migrating to PromoteCanonicalServerUrl (53)
+  [4;35;1mSQL (8.5ms)[0m   [0mALTER TABLE `blogs` ADD `base_url` varchar(255)[0m
+  [4;36;1mPromoteCanonicalServerUrl::Blog Load (0.3ms)[0m   [0;1mSELECT * FROM `blogs` [0m
+  [4;35;1mPromoteCanonicalServerUrl::Blog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mPromoteCanonicalServerUrl::Blog Update (0.2ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncanonical_server_url: \"\"\n', `base_url` = '' WHERE `id` = 1[0m
+  [4;36;1mSQL (0.5ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('53')[0m
+Migrating to UpgradeSidebarObjects (54)
+  [4;36;1mSQL (10.5ms)[0m   [0;1mALTER TABLE `sidebars` ADD `type` varchar(255)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mUpgradeSidebarObjects::Sidebar Load (0.3ms)[0m   [0;1mSELECT * FROM `sidebars` [0m
+  [4;35;1mUpgradeSidebarObjects::Sidebar Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+  [4;36;1mUpgradeSidebarObjects::Sidebar Update (0.2ms)[0m   [0;1mUPDATE `sidebars` SET `type` = 'PageSidebar' WHERE `id` = 1[0m
+  [4;35;1mUpgradeSidebarObjects::Sidebar Update (0.2ms)[0m   [0mUPDATE `sidebars` SET `type` = 'CategorySidebar' WHERE `id` = 2[0m
+  [4;36;1mUpgradeSidebarObjects::Sidebar Update (0.2ms)[0m   [0;1mUPDATE `sidebars` SET `type` = 'ArchivesSidebar' WHERE `id` = 3[0m
+  [4;35;1mUpgradeSidebarObjects::Sidebar Update (0.2ms)[0m   [0mUPDATE `sidebars` SET `type` = 'StaticSidebar' WHERE `id` = 4[0m
+  [4;36;1mUpgradeSidebarObjects::Sidebar Update (0.2ms)[0m   [0;1mUPDATE `sidebars` SET `type` = 'XmlSidebar' WHERE `id` = 5[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (9.3ms)[0m   [0;1mALTER TABLE `sidebars` DROP `controller`[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('54')[0m
+Migrating to LinkSidebarsToBlog (55)
+  [4;36;1mSQL (9.0ms)[0m   [0;1mALTER TABLE `sidebars` ADD `blog_id` int(11)[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mLinkSidebarsToBlog::Sidebar Load (0.3ms)[0m   [0;1mSELECT * FROM `sidebars` [0m
+  [4;35;1mLinkSidebarsToBlog::Sidebar Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+  [4;36;1mLinkSidebarsToBlog::Sidebar Update (0.2ms)[0m   [0;1mUPDATE `sidebars` SET `blog_id` = 1 WHERE `id` = 1[0m
+  [4;35;1mLinkSidebarsToBlog::Sidebar Update (0.2ms)[0m   [0mUPDATE `sidebars` SET `blog_id` = 1 WHERE `id` = 2[0m
+  [4;36;1mLinkSidebarsToBlog::Sidebar Update (0.2ms)[0m   [0;1mUPDATE `sidebars` SET `blog_id` = 1 WHERE `id` = 3[0m
+  [4;35;1mLinkSidebarsToBlog::Sidebar Update (0.2ms)[0m   [0mUPDATE `sidebars` SET `blog_id` = 1 WHERE `id` = 4[0m
+  [4;36;1mLinkSidebarsToBlog::Sidebar Update (0.1ms)[0m   [0;1mUPDATE `sidebars` SET `blog_id` = 1 WHERE `id` = 5[0m
+  [4;35;1mSQL (2.4ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('55')[0m
+Migrating to CreateNotifications (56)
+  [4;35;1mSQL (1.2ms)[0m   [0mRENAME TABLE `notifications` TO `old_notifications`[0m
+  [4;36;1mSQL (19.7ms)[0m   [0;1mCREATE TABLE `notifications` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `content_id` int(11), `user_id` int(11), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;35;1mSQL (1.3ms)[0m   [0mDROP TABLE `old_notifications`[0m
+  [4;36;1mSQL (0.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('56')[0m
+Migrating to AddCategorizationModel (57)
+  [4;35;1mSQL (7.8ms)[0m   [0mCREATE TABLE `categorizations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `article_id` int(11), `category_id` int(11), `is_primary` tinyint(1)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.9ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('57')[0m
+Migrating to SeparateEntriesAndFeedback (58)
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (6.3ms)[0m   [0;1mCREATE TABLE `feedback` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `type` varchar(255), `title` varchar(255), `author` varchar(255), `body` text, `extended` text, `excerpt` text, `keywords` varchar(255), `created_at` datetime, `updated_at` datetime, `user_id` int(11), `permalink` varchar(255), `guid` varchar(255), `text_filter_id` int(11), `whiteboard` text, `article_id` int(11), `email` varchar(255), `url` varchar(255), `ip` varchar(40), `blog_name` varchar(255), `name` varchar(255), `published` tinyint(1) DEFAULT 0, `allow_pings` tinyint(1), `allow_comments` tinyint(1), `blog_id` int(11) NOT NULL, `published_at` datetime, `state` text, `status_confirmed` tinyint(1)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mSeparateEntriesAndFeedback::Content Update (0.3ms)[0m   [0;1mUPDATE `contents` SET state = 'spam' WHERE (`contents`.`state` = 'ContentState::Spam') [0m
+  [4;35;1mSeparateEntriesAndFeedback::Content Update (0.1ms)[0m   [0mUPDATE `contents` SET state = 'ham' WHERE (`contents`.`state` = 'ContentState::Ham') [0m
+  [4;36;1mSeparateEntriesAndFeedback::Content Update (0.1ms)[0m   [0;1mUPDATE `contents` SET state = 'presumed_spam' WHERE (`contents`.`state` = 'ContentState::PresumedSpam') [0m
+  [4;35;1mSeparateEntriesAndFeedback::Content Update (0.1ms)[0m   [0mUPDATE `contents` SET state = 'presumed_ham' WHERE (`contents`.`state` = 'ContentState::PresumedHam') [0m
+  [4;36;1mSeparateEntriesAndFeedback::Content Update (0.1ms)[0m   [0;1mUPDATE `contents` SET state = 'published' WHERE (`contents`.`state` = 'ContentState::Published') [0m
+  [4;35;1mSeparateEntriesAndFeedback::Content Update (0.1ms)[0m   [0mUPDATE `contents` SET state = 'publication_pending' WHERE (`contents`.`state` = 'ContentState::PublicationPending') [0m
+  [4;36;1mSeparateEntriesAndFeedback::Content Update (0.1ms)[0m   [0;1mUPDATE `contents` SET state = 'draft' WHERE (`contents`.`state` = 'ContentState::Draft') [0m
+  [4;35;1mSeparateEntriesAndFeedback::Content Update (0.1ms)[0m   [0mUPDATE `contents` SET state = 'withdrawn' WHERE (`contents`.`state` = 'ContentState::Withdrawn') [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mBEGIN[0m
+  [4;36;1mSeparateEntriesAndFeedback::Content Load (0.3ms)[0m   [0;1mSELECT * FROM `contents` WHERE (`contents`.`type` IN ('Comment','Trackback')) [0m
+  [4;35;1mSeparateEntriesAndFeedback::Content Delete all (0.1ms)[0m   [0mDELETE FROM `contents` WHERE (`contents`.`type` IN ('Comment','Trackback')) [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('58')[0m
+Migrating to CleanupFeedbackTable (59)
+  [4;36;1mSQL (14.5ms)[0m   [0;1mALTER TABLE `feedback` DROP `extended`[0m
+  [4;35;1mSQL (10.0ms)[0m   [0mALTER TABLE `feedback` DROP `keywords`[0m
+  [4;36;1mSQL (16.3ms)[0m   [0;1mALTER TABLE `feedback` DROP `permalink`[0m
+  [4;35;1mSQL (10.0ms)[0m   [0mALTER TABLE `feedback` DROP `allow_pings`[0m
+  [4;36;1mSQL (19.1ms)[0m   [0;1mALTER TABLE `feedback` DROP `allow_comments`[0m
+  [4;35;1mSQL (38.4ms)[0m   [0mALTER TABLE `feedback` DROP `name`[0m
+  [4;36;1mSQL (49.5ms)[0m   [0;1mCREATE INDEX `index_feedback_on_article_id` ON `feedback` (`article_id`)[0m
+  [4;35;1mSQL (23.8ms)[0m   [0mCREATE INDEX `index_feedback_on_text_filter_id` ON `feedback` (`text_filter_id`)[0m
+  [4;36;1mSQL (0.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('59')[0m
+Migrating to CleanupContentsTable (60)
+  [4;35;1mSQL (45.1ms)[0m   [0mDROP INDEX `index_contents_on_article_id` ON contents[0m
+  [4;36;1mSQL (57.9ms)[0m   [0;1mALTER TABLE `contents` DROP `article_id`[0m
+  [4;35;1mSQL (23.6ms)[0m   [0mALTER TABLE `contents` DROP `email`[0m
+  [4;36;1mSQL (36.2ms)[0m   [0;1mALTER TABLE `contents` DROP `url`[0m
+  [4;35;1mSQL (57.2ms)[0m   [0mALTER TABLE `contents` DROP `ip`[0m
+  [4;36;1mSQL (81.1ms)[0m   [0;1mALTER TABLE `contents` DROP `blog_name`[0m
+  [4;35;1mSQL (75.8ms)[0m   [0mALTER TABLE `contents` DROP `status_confirmed`[0m
+  [4;36;1mSQL (89.4ms)[0m   [0;1mCREATE INDEX `index_contents_on_published` ON `contents` (`published`)[0m
+  [4;35;1mSQL (19.7ms)[0m   [0mCREATE INDEX `index_contents_on_text_filter_id` ON `contents` (`text_filter_id`)[0m
+  [4;36;1mSQL (2.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('60')[0m
+Migrating to ConvertTitlePrefixSetting (61)
+  [4;35;1mConvertTitlePrefixSetting::BareBlog Load (0.2ms)[0m   [0mSELECT * FROM `blogs` [0m
+  [4;36;1mConvertTitlePrefixSetting::BareBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mSQL (1.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('61')[0m
+Migrating to AddSitealizerPlugin (62)
+  [4;36;1mSQL (25.5ms)[0m   [0;1mCREATE TABLE `sitealizer` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `path` varchar(255), `ip` varchar(255), `referer` varchar(255), `language` varchar(255), `user_agent` varchar(255), `created_at` datetime, `created_on` date) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('62')[0m
+Migrating to RejigStateField (63)
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mRejigStateField::BareContent Load (0.4ms)[0m   [0mSELECT * FROM `contents` [0m
+  [4;36;1mRejigStateField::BareContent Columns (1.2ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mRejigStateField::BareContent Update (0.3ms)[0m   [0mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:42', `state` = 'published' WHERE `id` = 1[0m
+  [4;36;1mRejigStateField::BareContent Update (0.2ms)[0m   [0;1mUPDATE `contents` SET `updated_at` = '2009-09-21 18:03:42', `state` = 'published' WHERE `id` = 2[0m
+  [4;35;1mRejigStateField::BareFeedback Load (0.3ms)[0m   [0mSELECT * FROM `feedback` [0m
+  [4;36;1mSQL (3.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (1.2ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mSQL (58.3ms)[0m   [0;1mALTER TABLE `contents` CHANGE `state` `state` varchar(255) DEFAULT NULL[0m
+  [4;35;1mSQL (1.2ms)[0m   [0mSHOW FIELDS FROM `feedback`[0m
+  [4;36;1mSQL (65.6ms)[0m   [0;1mALTER TABLE `feedback` CHANGE `state` `state` varchar(255) DEFAULT NULL[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('63')[0m
+Migrating to AddUsersProfile (64)
+  [4;36;1mSQL (40.2ms)[0m   [0;1mALTER TABLE `users` ADD `profile_id` int(11) DEFAULT 1[0m
+  [4;35;1mSQL (28.5ms)[0m   [0mCREATE TABLE `profiles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `label` varchar(255), `nicename` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddUsersProfile::Profile Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mAddUsersProfile::Profile Create (0.2ms)[0m   [0;1mINSERT INTO `profiles` (`label`, `nicename`) VALUES('admin', 'Typo administrator')[0m
+  [4;35;1mAddUsersProfile::Profile Create (0.1ms)[0m   [0mINSERT INTO `profiles` (`label`, `nicename`) VALUES('publisher', 'Blog publisher')[0m
+  [4;36;1mAddUsersProfile::Profile Create (0.1ms)[0m   [0;1mINSERT INTO `profiles` (`label`, `nicename`) VALUES('contributor', 'Contributor')[0m
+  [4;35;1mSQL (8.4ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (3.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('64')[0m
+Migrating to AddUsersRights (65)
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (28.0ms)[0m   [0;1mCREATE TABLE `rights` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `description` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (44.4ms)[0m   [0;1mCREATE TABLE `profiles_to_rights` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `profile_id` int, `right_id` int) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.2ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'admin') LIMIT 1[0m
+  [4;36;1mProfile Load (0.2ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'publisher') LIMIT 1[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'contributor') LIMIT 1[0m
+  [4;36;1mAddUsersRights::Right Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `rights`[0m
+  [4;35;1mAddUsersRights::Right Create (0.2ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('admin', 'Global administration')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles_to_rights`[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(1, 1)[0m
+  [4;36;1mAddUsersRights::Right Create (0.1ms)[0m   [0;1mINSERT INTO `rights` (`name`, `description`) VALUES('content_create', 'Create article')[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(2, 1)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(2, 2)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('content_edit', 'Edit article')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(3, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(3, 2)[0m
+  [4;36;1mAddUsersRights::Right Create (0.1ms)[0m   [0;1mINSERT INTO `rights` (`name`, `description`) VALUES('content_delete', 'Delete article')[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(4, 1)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(4, 2)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('category_create', 'Create a category')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(5, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(5, 2)[0m
+  [4;36;1mAddUsersRights::Right Create (0.1ms)[0m   [0;1mINSERT INTO `rights` (`name`, `description`) VALUES('category_edit', 'Edit a category')[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(6, 1)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(6, 2)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('category_delete', 'Delete a category')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(7, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(7, 2)[0m
+  [4;36;1mAddUsersRights::Right Create (0.1ms)[0m   [0;1mINSERT INTO `rights` (`name`, `description`) VALUES('page_create', 'Create a category')[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(8, 1)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(8, 2)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('page_edit', 'Edit a category')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(9, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(9, 2)[0m
+  [4;36;1mAddUsersRights::Right Create (0.1ms)[0m   [0;1mINSERT INTO `rights` (`name`, `description`) VALUES('page_delete', 'Delete a category')[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(10, 1)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(10, 2)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('feedback_create', 'Add a comment')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(11, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(11, 2)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(11, 3)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('feedback_self_edit', 'Edit self comments')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(12, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(12, 2)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(12, 3)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('feedback_edit', 'Edit any comment')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(13, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(13, 2)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(13, 3)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('feedback_self_delete', 'Delete self comments')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(14, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(14, 2)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(14, 3)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('feedback_delete', 'Delete any comment')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(15, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(15, 2)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.2ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(15, 3)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('user_create', 'Create users')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(16, 1)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('user_edit', 'Edit users')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(17, 1)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('user_self_edit', 'Edit self account')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(18, 1)[0m
+  [4;35;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(18, 2)[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(18, 3)[0m
+  [4;35;1mAddUsersRights::Right Create (0.1ms)[0m   [0mINSERT INTO `rights` (`name`, `description`) VALUES('user_delete', 'Delete users')[0m
+  [4;36;1mAddUsersRights::ProfilesToRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_to_rights` (`right_id`, `profile_id`) VALUES(19, 1)[0m
+  [4;35;1mSQL (3.9ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (1.4ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('65')[0m
+Migrating to FixProfiles (66)
+  [4;35;1mSQL (15.7ms)[0m   [0mALTER TABLE `users` DROP `profile_id`[0m
+  [4;36;1mSQL (11.5ms)[0m   [0;1mALTER TABLE `users` ADD `profile_id` int(11)[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'admin') LIMIT 1[0m
+  [4;36;1mFixProfiles::User Update (0.2ms)[0m   [0;1mUPDATE `users` SET profile_id = 1 [0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('66')[0m
+Migrating to RemoveBlogIds (67)
+  [4;36;1mSQL (13.4ms)[0m   [0;1mDROP INDEX `index_contents_on_blog_id` ON contents[0m
+  [4;35;1mSQL (14.8ms)[0m   [0mALTER TABLE `contents` DROP `blog_id`[0m
+  [4;36;1mSQL (22.3ms)[0m   [0;1mALTER TABLE `sidebars` DROP `blog_id`[0m
+  [4;35;1mSQL (31.1ms)[0m   [0mALTER TABLE `feedback` DROP `blog_id`[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('67')[0m
+Migrating to FixGrants (68)
+  [4;35;1mSQL (1.3ms)[0m   [0mDROP TABLE `profiles_to_rights`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (37.4ms)[0m   [0mCREATE TABLE `profiles_rights` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `profile_id` int, `right_id` int) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'admin') LIMIT 1[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'publisher') LIMIT 1[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'contributor') LIMIT 1[0m
+  [4;36;1mFixGrants::Right Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `rights`[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'admin') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles_rights`[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.2ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(1, 1)[0m
+  [4;36;1mFixGrants::Right Load (0.2ms)[0m   [0;1mSELECT * FROM `rights` WHERE (`rights`.`name` = 'content_create') LIMIT 1[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(2, 1)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(2, 2)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'content_edit') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(3, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(3, 2)[0m
+  [4;36;1mFixGrants::Right Load (0.2ms)[0m   [0;1mSELECT * FROM `rights` WHERE (`rights`.`name` = 'content_delete') LIMIT 1[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(4, 1)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(4, 2)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'category_create') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(5, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(5, 2)[0m
+  [4;36;1mFixGrants::Right Load (0.2ms)[0m   [0;1mSELECT * FROM `rights` WHERE (`rights`.`name` = 'category_edit') LIMIT 1[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(6, 1)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(6, 2)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'category_delete') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(7, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(7, 2)[0m
+  [4;36;1mFixGrants::Right Load (0.2ms)[0m   [0;1mSELECT * FROM `rights` WHERE (`rights`.`name` = 'page_create') LIMIT 1[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(8, 1)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(8, 2)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'page_edit') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(9, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(9, 2)[0m
+  [4;36;1mFixGrants::Right Load (0.2ms)[0m   [0;1mSELECT * FROM `rights` WHERE (`rights`.`name` = 'page_delete') LIMIT 1[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(10, 1)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(10, 2)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'feedback_create') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(11, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(11, 2)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(11, 3)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'feedback_self_edit') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(12, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(12, 2)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(12, 3)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'feedback_edit') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(13, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(13, 2)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(13, 3)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'feedback_self_delete') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(14, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(14, 2)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(14, 3)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'feedback_delete') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(15, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(15, 2)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(15, 3)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'user_create') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(16, 1)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'user_edit') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(17, 1)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'user_self_edit') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(18, 1)[0m
+  [4;35;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(18, 2)[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(18, 3)[0m
+  [4;35;1mFixGrants::Right Load (0.2ms)[0m   [0mSELECT * FROM `rights` WHERE (`rights`.`name` = 'user_delete') LIMIT 1[0m
+  [4;36;1mFixGrants::ProfilesRight Create (0.1ms)[0m   [0;1mINSERT INTO `profiles_rights` (`right_id`, `profile_id`) VALUES(19, 1)[0m
+  [4;35;1mSQL (3.3ms)[0m   [0mCOMMIT[0m
+  [4;36;1mSQL (0.7ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('68')[0m
+Migrating to AddModulesToProfile (69)
+  [4;35;1mSQL (28.7ms)[0m   [0mALTER TABLE `profiles` ADD `modules` text[0m
+  [4;36;1mAddModulesToProfile::Profile Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mAddModulesToProfile::Profile Load (0.2ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'admin') LIMIT 1[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddModulesToProfile::Profile Update (0.2ms)[0m   [0mUPDATE `profiles` SET `modules` = '--- \n- :dashboard\n- :write\n- :content\n- :feedback\n- :themes\n- :sidebar\n- :users\n- :settings\n' WHERE `id` = 1[0m
+  [4;36;1mSQL (11.3ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mAddModulesToProfile::Profile Load (0.2ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'publisher') LIMIT 1[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddModulesToProfile::Profile Update (0.2ms)[0m   [0mUPDATE `profiles` SET `modules` = '--- \n- :dashboard\n- :write\n- :content\n- :feedback\n' WHERE `id` = 2[0m
+  [4;36;1mSQL (7.2ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (6.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('69')[0m
+Migrating to AddUsersToNonAdmins (70)
+  [4;36;1mAddUsersToNonAdmins::Profile Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mAddUsersToNonAdmins::Profile Load (0.2ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'publisher') LIMIT 1[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddUsersToNonAdmins::Profile Update (0.2ms)[0m   [0mUPDATE `profiles` SET `modules` = '--- \n- :dashboard\n- :write\n- :content\n- :feedback\n- :users\n' WHERE `id` = 2[0m
+  [4;36;1mSQL (5.2ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mAddUsersToNonAdmins::Profile Load (0.2ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'contributor') LIMIT 1[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mAddUsersToNonAdmins::Profile Update (0.2ms)[0m   [0mUPDATE `profiles` SET `modules` = '--- \n- :dashboard\n- :users\n' WHERE `id` = 3[0m
+  [4;36;1mSQL (6.3ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('70')[0m
+Migrating to FixTagsNaming (71)
+  [4;36;1mTag Load (0.1ms)[0m   [0;1mSELECT * FROM `tags` [0m
+  [4;35;1mSQL (0.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('71')[0m
+Migrating to AddRememberToken (72)
+  [4;36;1mSQL (16.1ms)[0m   [0;1mALTER TABLE `users` ADD `remember_token` varchar(255)[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('72')[0m
+Migrating to AddMetaAndSubcategories (73)
+  [4;36;1mSQL (9.0ms)[0m   [0;1mALTER TABLE `categories` ADD `keywords` text[0m
+  [4;35;1mSQL (9.0ms)[0m   [0mALTER TABLE `categories` ADD `description` text[0m
+  [4;36;1mSQL (33.0ms)[0m   [0;1mALTER TABLE `categories` ADD `parent_id` int(11)[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('73')[0m
+Migrating to AddRememberTokenExpiresAt (74)
+  [4;36;1mSQL (44.1ms)[0m   [0;1mALTER TABLE `users` ADD `remember_token_expires_at` datetime[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('74')[0m
+Migrating to MoveEditorToUser (75)
+  [4;36;1mSQL (37.5ms)[0m   [0;1mALTER TABLE `users` ADD `editor` int(11) DEFAULT 2[0m
+  [4;35;1mBlog Load (0.3ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Load (0.3ms)[0m   [0mSELECT * FROM `users` [0m
+  [4;36;1mSQL (0.8ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('75')[0m
+Migrating to FixUsersEmptyEmail (76)
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` [0m
+  [4;36;1mSQL (1.9ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('76')[0m
+Migrating to FixUserlessArticles (77)
+  [4;35;1mArticle Columns (1.3ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mArticle Load (0.3ms)[0m   [0;1mSELECT * FROM `contents` WHERE ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mUser Columns (0.9ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.2ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) [0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mArticle Exists (0.4ms)[0m   [0;1mSELECT `contents`.id FROM `contents` WHERE (`contents`.`guid` = BINARY '5d2955d8-31b6-4c47-81a2-88c1cbe00d48' AND `contents`.id <> 1) AND ( (`contents`.`type` = 'Article' ) ) LIMIT 1[0m
+  [4;35;1mArticle Update (0.2ms)[0m   [0mUPDATE `contents` SET `whiteboard` = NULL WHERE `id` = 1[0m
+  [4;36;1mJoin Table Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `articles_tags`[0m
+  [4;35;1mTag Load (0.2ms)[0m   [0mSELECT * FROM `tags` INNER JOIN `articles_tags` ON `tags`.id = `articles_tags`.tag_id WHERE (`articles_tags`.article_id = 1 ) [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+  [4;35;1mSQL (1.8ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('77')[0m
+Migrating to AddTextfilterToUsers (78)
+  [4;36;1mTextFilter Load (0.4ms)[0m   [0;1mSELECT * FROM `text_filters` WHERE (name = 'none') LIMIT 1[0m
+  [4;35;1mTextFilter Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `text_filters`[0m
+  [4;36;1mSQL (11.2ms)[0m   [0;1mALTER TABLE `users` ADD `text_filter_id` varchar(255) DEFAULT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Load (0.3ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mTextFilter Load (0.3ms)[0m   [0mSELECT * FROM `text_filters` WHERE (name= 'markdown smartypants') LIMIT 1[0m
+  [4;36;1mUser Load (0.3ms)[0m   [0;1mSELECT * FROM `users` [0m
+  [4;35;1mSQL (0.4ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('78')[0m
+Migrating to MoveEditorAsString (79)
+  [4;36;1mSQL (10.1ms)[0m   [0;1mALTER TABLE `users` DROP `editor`[0m
+  [4;35;1mSQL (13.2ms)[0m   [0mALTER TABLE `users` ADD `editor` varchar(255) DEFAULT 'simple'[0m
+  [4;36;1mUser Load (0.3ms)[0m   [0;1mSELECT * FROM `users` [0m
+  [4;35;1mSQL (0.6ms)[0m   [0mINSERT INTO schema_migrations (version) VALUES ('79')[0m
+Migrating to AddStateToUser (80)
+  [4;36;1mSQL (11.5ms)[0m   [0;1mALTER TABLE `users` ADD `state` varchar(255) DEFAULT 'active'[0m
+  [4;35;1mUser Load (0.3ms)[0m   [0mSELECT * FROM `users` [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('80')[0m
+Migrating to CreateCacheInformations (81)
+PageCache - sweep_all called by "/home/nate/workspace/wise-web/vendor/rails/activerecord/lib/active_record/migration.rb:280:in `send'"
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+PageCache - About to zap: ["index.*", "articles.*", "pages", "page", "pages.*", "feedback", "feedback.*", "comments", "comments.*", "category", "categories.*", "xml", "sitemap.xml", "*.rss", "*.atom", "tag", "tags.*", "category", "archives.*"]
+PageCache - About to zap: 1990..2020
+PageCache - About to zap: ["1990.*", "1991.*", "1992.*", "1993.*", "1994.*", "1995.*", "1996.*", "1997.*", "1998.*", "1999.*", "2000.*", "2001.*", "2002.*", "2003.*", "2004.*", "2005.*", "2006.*", "2007.*", "2008.*", "2009.*", "2010.*", "2011.*", "2012.*", "2013.*", "2014.*", "2015.*", "2016.*", "2017.*", "2018.*", "2019.*", "2020.*"]
+  [4;36;1mSQL (7.3ms)[0m   [0;1mCREATE TABLE `cache_informations` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `path` varchar(255), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB[0m
+  [4;35;1mSQL (10.7ms)[0m   [0mCREATE INDEX `index_cache_informations_on_path` ON `cache_informations` (`path`)[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('81')[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mCREATE DATABASE `typo_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_general_ci`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.2ms)[0m   [0mselect * from sessions[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mselect * from sessions[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mselect * from sessions[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Migrating to InitialSchema (1)
+Migrating to AddUserEmail (2)
+Migrating to AddArticleUserId (3)
+Migrating to AddSidebars (4)
+Migrating to AddCacheTable (5)
+Migrating to AddPages (6)
+Migrating to AddPermalink (7)
+Migrating to AddPageTitle (8)
+Migrating to AddArticleGuid (9)
+Migrating to AddTags (10)
+Migrating to AddArticleId (11)
+Migrating to EnlargeSettings (12)
+Migrating to AddTextfilters (13)
+Migrating to MoveTextFilterToTextFilterId (14)
+Migrating to ConvertMysqlToInnodb (15)
+Migrating to FixIsPrimaryPostgres (16)
+Migrating to AddCommentUserId (17)
+Migrating to AddGuids (18)
+Migrating to AddWhiteboardsToContent (19)
+Migrating to SuperclassArticles (20)
+Migrating to SuperclassComments (21)
+Migrating to SuperclassTrackbacks (22)
+Migrating to SuperclassPages (23)
+Migrating to CleanupContents (24)
+Migrating to AddItunesMetadata (25)
+Migrating to AddRedirectTable (26)
+Migrating to SetCommentPublishedFlag (27)
+Migrating to RenameRedirectTo (28)
+Migrating to AddUserNotification (29)
+Migrating to IndexSessions (30)
+Migrating to AddNotificationsTable (31)
+Migrating to AddJabberNotification (32)
+Migrating to AddCountCaching (33)
+Migrating to BoolifyPublished (34)
+Migrating to BoolifyContentAllowFoo (35)
+Migrating to AddTagDisplayName (36)
+Migrating to EnlargeIpField (37)
+Migrating to AddBlogObject (38)
+Migrating to SerializeBlogAttributes (39)
+Migrating to AttachContentToBlog (40)
+Migrating to FixupDefaultSidebars (41)
+Migrating to RemoveSidebarStagedConfig (42)
+Migrating to CreateTriggers (43)
+Migrating to AddPublishedAtToContent (44)
+Migrating to FixContentsPublishedDefault (45)
+Migrating to FixupForthcomingPublications (46)
+Migrating to AddContentStateField (47)
+Migrating to RemoveCountCaching (48)
+Migrating to MoveFeedbackToNewStateMachine (49)
+Migrating to AddStatusConfirmedFieldToContent (50)
+Migrating to FixCanonicalServerUrl (51)
+Migrating to RemoveCachedHtml (52)
+Migrating to PromoteCanonicalServerUrl (53)
+Migrating to UpgradeSidebarObjects (54)
+Migrating to LinkSidebarsToBlog (55)
+Migrating to CreateNotifications (56)
+Migrating to AddCategorizationModel (57)
+Migrating to SeparateEntriesAndFeedback (58)
+Migrating to CleanupFeedbackTable (59)
+Migrating to CleanupContentsTable (60)
+Migrating to ConvertTitlePrefixSetting (61)
+Migrating to AddSitealizerPlugin (62)
+Migrating to RejigStateField (63)
+Migrating to AddUsersProfile (64)
+Migrating to AddUsersRights (65)
+Migrating to FixProfiles (66)
+Migrating to RemoveBlogIds (67)
+Migrating to FixGrants (68)
+Migrating to AddModulesToProfile (69)
+Migrating to AddUsersToNonAdmins (70)
+Migrating to FixTagsNaming (71)
+Migrating to AddRememberToken (72)
+Migrating to AddMetaAndSubcategories (73)
+Migrating to AddRememberTokenExpiresAt (74)
+Migrating to MoveEditorToUser (75)
+Migrating to FixUsersEmptyEmail (76)
+Migrating to FixUserlessArticles (77)
+Migrating to AddTextfilterToUsers (78)
+Migrating to MoveEditorAsString (79)
+Migrating to AddStateToUser (80)
+Migrating to CreateCacheInformations (81)
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mSHOW FIELDS FROM `articles_tags`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mdescribe `articles_tags`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `articles_tags`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blacklist_patterns`[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mdescribe `blacklist_patterns`[0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW KEYS FROM `blacklist_patterns`[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mdescribe `blogs`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `blogs`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW FIELDS FROM `cache_informations`[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mdescribe `cache_informations`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSHOW KEYS FROM `cache_informations`[0m
+  [4;35;1mSQL (0.5ms)[0m   [0mSHOW FIELDS FROM `categories`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mdescribe `categories`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `categories`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW FIELDS FROM `categorizations`[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mdescribe `categorizations`[0m
+  [4;36;1mSQL (51.5ms)[0m   [0;1mSHOW KEYS FROM `categorizations`[0m
+  [4;35;1mSQL (0.9ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mSQL (0.7ms)[0m   [0;1mdescribe `contents`[0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW KEYS FROM `contents`[0m
+  [4;36;1mSQL (0.8ms)[0m   [0;1mSHOW FIELDS FROM `feedback`[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mdescribe `feedback`[0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW KEYS FROM `feedback`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mSHOW FIELDS FROM `notifications`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mdescribe `notifications`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `notifications`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW FIELDS FROM `page_caches`[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mdescribe `page_caches`[0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW KEYS FROM `page_caches`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mSHOW FIELDS FROM `pings`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mdescribe `pings`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `pings`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mSQL (45.4ms)[0m   [0mdescribe `profiles`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW KEYS FROM `profiles`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mSHOW FIELDS FROM `profiles_rights`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mdescribe `profiles_rights`[0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW KEYS FROM `profiles_rights`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW FIELDS FROM `redirects`[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mdescribe `redirects`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSHOW KEYS FROM `redirects`[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mSHOW FIELDS FROM `resources`[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mdescribe `resources`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `resources`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW FIELDS FROM `rights`[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mdescribe `rights`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSHOW KEYS FROM `rights`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mSHOW FIELDS FROM `sessions`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mdescribe `sessions`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `sessions`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW FIELDS FROM `sidebars`[0m
+  [4;35;1mSQL (44.8ms)[0m   [0mdescribe `sidebars`[0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW KEYS FROM `sidebars`[0m
+  [4;35;1mSQL (0.6ms)[0m   [0mSHOW FIELDS FROM `sitealizer`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mdescribe `sitealizer`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `sitealizer`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW FIELDS FROM `tags`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mdescribe `tags`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSHOW KEYS FROM `tags`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mSHOW FIELDS FROM `text_filters`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mdescribe `text_filters`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `text_filters`[0m
+  [4;36;1mSQL (0.4ms)[0m   [0;1mSHOW FIELDS FROM `triggers`[0m
+  [4;35;1mSQL (0.4ms)[0m   [0mdescribe `triggers`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSHOW KEYS FROM `triggers`[0m
+  [4;35;1mSQL (0.7ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.6ms)[0m   [0;1mdescribe `users`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSHOW KEYS FROM `users`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mselect * from sessions[0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mselect * from sessions[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ArticlesController#index (for 127.0.0.1 at 2009-09-21 18:05:08) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:05:08') [0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mUser Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT count(*) AS count_all FROM `users` [0m
+Redirected to controlleraccountsactionsignup
+Filter chain halted as [:verify_config] rendered_or_redirected.
+Completed in 10ms (DB: 3) | 302 Found [http://localhost/]
+
+
+Processing AccountsController#signup (for 127.0.0.1 at 2009-09-21 18:05:09) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:05:09') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM `users` [0m
+Rendering template within layouts/accounts
+Rendering accounts/signup
+Completed in 34ms (View: 23, DB: 2) | 200 OK [http://localhost/accounts/signup]
+
+
+Processing AccountsController#signup (for 127.0.0.1 at 2009-09-21 18:06:01) [POST]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"authenticity_token"=>"c881bfd917433a0e1bbcf16eea27afe8c7c8e231", "user"=>{"name"=>"Nate", "password_confirmation"=>"taw49dub", "password"=>"taw49dub", "login"=>"nwise", "email"=>"nathanwise@gmail.com"}}
+  [4;35;1mTrigger Load (0.2ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:01') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT count(*) AS count_all FROM `users` [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT count(*) AS count_all FROM `users` [0m
+  [4;36;1mProfile Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.3ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`label` = 'admin') LIMIT 1[0m
+  [4;36;1mUser Exists (0.2ms)[0m   [0;1mSELECT `users`.id FROM `users` WHERE (`users`.`login` = BINARY 'nwise') LIMIT 1[0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Rendered notification_mailer/_mail_header (0.2ms)
+Rendered notification_mailer/_mail_footer (6.8ms)
+Sent mail to 
+
+From: typo@example.com
+To: nathanwise@gmail.com
+Mime-Version: 1.0
+Content-Type: text/html; charset=utf-8
+X-Mailer: Typo 5.3
+
+<p>You account is create on <a href="">My Shiny Weblog!</a></p>
+
+<div style="margin:1em;padding:4px;background:#eee;border:1px solid black">
+
+
+<p>All information about your account are :</p>
+
+<ul>
+  <li>Login : nwise</li>
+  <li>Password : taw49dub</li>
+</ul>
+
+</div>
+
+<p><em>This is being sent to Nate because you asked to be notified via email whenever
+new content is posted to  <a href="">My Shiny Weblog!</a>
+To unsubscribe, go to
+<a href="/admin/users/edit">/admin/users/edit</a>
+and change your user settings.</p>
+
+  [4;35;1mUser Create (0.3ms)[0m   [0mINSERT INTO `users` (`name`, `notify_via_email`, `notify_via_jabber`, `remember_token_expires_at`, `notify_watch_my_articles`, `editor`, `text_filter_id`, `remember_token`, `jabber`, `login`, `password`, `email`, `notify_on_new_articles`, `notify_on_comments`, `profile_id`, `state`) VALUES('Nate', NULL, NULL, NULL, NULL, 'simple', '1', NULL, NULL, 'nwise', 'cb62a1049a5fbde05872f232bb2eaf387b448578', 'nathanwise@gmail.com', NULL, NULL, 1, 'active')[0m
+PageCache - sweep_theme_cache called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+PageCache - About to zap: "images/theme stylesheets/theme javascripts/theme"
+PageCache - sweep_all called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+  [4;36;1mCacheInformation Load (0.2ms)[0m   [0;1mSELECT * FROM `cache_informations` [0m
+  [4;35;1mSQL (14.9ms)[0m   [0mCOMMIT[0m
+Redirected to controlleradmin/settingsactionindex
+Completed in 245ms (DB: 18) | 302 Found [http://localhost/accounts/signup]
+
+
+Processing Admin::SettingsController#index (for 127.0.0.1 at 2009-09-21 18:06:02) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:02') [0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.2ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.2ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/index
+Rendered admin/settings/_submit (0.2ms)
+Completed in 109ms (View: 19, DB: 3) | 200 OK [http://localhost/admin/settings]
+
+
+Processing Admin::ThemesController#index (for 127.0.0.1 at 2009-09-21 18:06:06) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:06') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/themes/index
+Completed in 148ms (View: 12, DB: 3) | 200 OK [http://localhost/admin/themes]
+
+
+Processing Admin::ThemesController#preview (for 127.0.0.1 at 2009-09-21 18:06:07) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"theme"=>"dirtylicious"}
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:07') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Sending file /home/nate/workspace/wise-web/themes/dirtylicious/preview.png
+Completed in 32ms (View: 0, DB: 3) | 200 OK [http://localhost/admin/themes/preview?theme=dirtylicious]
+
+
+Processing Admin::ThemesController#preview (for 127.0.0.1 at 2009-09-21 18:06:08) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"theme"=>"scribbish"}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:08') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Sending file /home/nate/workspace/wise-web/themes/scribbish/preview.png
+Completed in 33ms (View: 0, DB: 3) | 200 OK [http://localhost/admin/themes/preview?theme=scribbish]
+
+
+Processing Admin::ThemesController#preview (for 127.0.0.1 at 2009-09-21 18:06:08) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"theme"=>"typographic"}
+  [4;36;1mTrigger Load (0.1ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:08') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Sending file /home/nate/workspace/wise-web/themes/typographic/preview.png
+Completed in 33ms (View: 0, DB: 3) | 200 OK [http://localhost/admin/themes/preview?theme=typographic]
+
+
+Processing Admin::ThemesController#preview (for 127.0.0.1 at 2009-09-21 18:06:09) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"theme"=>"standard_issue"}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:09') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Sending file /home/nate/workspace/wise-web/themes/standard_issue/preview.png
+Completed in 36ms (View: 0, DB: 3) | 200 OK [http://localhost/admin/themes/preview?theme=standard_issue]
+
+
+Processing Admin::ContentController#new (for 127.0.0.1 at 2009-09-21 18:06:23) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.3ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:23') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mArticle Columns (0.9ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mTextFilter Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `text_filters`[0m
+  [4;35;1mTextFilter Load (0.2ms)[0m   [0mSELECT * FROM `text_filters` WHERE (`text_filters`.`id` = 1) [0m
+  [4;36;1mTextFilter Load (0.2ms)[0m   [0;1mSELECT * FROM `text_filters` WHERE (`text_filters`.`name` = 'none') LIMIT 1[0m
+#<Article:0x7f16db5f1768> leaving state Article::States::New
+#<Article:0x7f16db5f1768> entering state Article::States::JustPublished
+#<Article:0x7f16db5f1768> leaving state Article::States::JustPublished
+#<Article:0x7f16db5f1768> entering state Article::States::Published
+  [4;35;1mResource Load (0.2ms)[0m   [0mSELECT * FROM `resources` ORDER BY filename[0m
+  [4;36;1mCategory Load (0.2ms)[0m   [0;1mSELECT * FROM `categories` ORDER BY UPPER(name), position ASC[0m
+  [4;35;1mArticle Load (0.2ms)[0m   [0mSELECT * FROM `contents` WHERE (state='draft') AND ( (`contents`.`type` = 'Article' ) ) [0m
+Rendering template within layouts/administration
+Rendering admin/content/new
+Rendered admin/content/_drafts (0.2ms)
+  [4;36;1mResource Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `resources`[0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSELECT count(*) AS count_all FROM `resources` WHERE (`resources`.article_id = NULL) [0m
+Rendered admin/content/_attachment (1.5ms)
+  [4;36;1mTextFilter Load (0.2ms)[0m   [0;1mSELECT * FROM `text_filters` [0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `text_filters` WHERE (`text_filters`.`id` = 1) [0m
+Rendered admin/content/_form (16.1ms)
+Rendered admin/shared/_edit (20.0ms)
+Completed in 171ms (View: 29, DB: 7) | 200 OK [http://localhost/admin/content/new]
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ArticlesController#index (for 127.0.0.1 at 2009-09-21 18:06:29) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.3ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:29') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mUser Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSELECT count(*) AS count_all FROM `users` [0m
+Redirected to controlleradmin/settingsactionredirect
+Filter chain halted as [:verify_config] rendered_or_redirected.
+Completed in 14ms (DB: 3) | 302 Found [http://localhost/]
+
+
+Processing Admin::SettingsController#redirect (for 127.0.0.1 at 2009-09-21 18:06:29) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.1ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:29') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Redirected to actionindex
+Completed in 111ms (DB: 3) | 302 Found [http://localhost/admin/settings/redirect]
+
+
+Processing Admin::SettingsController#index (for 127.0.0.1 at 2009-09-21 18:06:30) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:30') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/index
+Rendered admin/settings/_submit (0.2ms)
+Completed in 43ms (View: 16, DB: 3) | 200 OK [http://localhost/admin/settings]
+
+
+Processing AccountsController#logout (for 127.0.0.1 at 2009-09-21 18:06:35) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.3ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:35') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mUser Load (0.3ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) [0m
+Storing #<User:0x7f16db485e38> in the cache
+PageCache - sweep_theme_cache called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+PageCache - About to zap: "images/theme stylesheets/theme javascripts/theme"
+PageCache - sweep_all called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+  [4;35;1mCacheInformation Load (0.1ms)[0m   [0mSELECT * FROM `cache_informations` [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mCOMMIT[0m
+Storing #<User:0x7f16db430488> in the cache
+Cookie set: auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
+Cookie set: typo_user_profile=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT
+Redirected to actionlogin
+Completed in 36ms (DB: 3) | 302 Found [http://localhost/accounts/logout]
+
+
+Processing AccountsController#login (for 127.0.0.1 at 2009-09-21 18:06:35) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.1ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:35') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT count(*) AS count_all FROM `users` [0m
+Rendering template within layouts/accounts
+Rendering accounts/login
+Rendered shared/_loginform (1.1ms)
+Completed in 24ms (View: 8, DB: 2) | 200 OK [http://localhost/accounts/login]
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSET SQL_AUTO_IS_NULL=0[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ArticlesController#index (for 127.0.0.1 at 2009-09-21 18:06:39) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.3ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:39') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mUser Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT count(*) AS count_all FROM `users` [0m
+Redirected to controlleradmin/settingsactionredirect
+Filter chain halted as [:verify_config] rendered_or_redirected.
+Completed in 12ms (DB: 3) | 302 Found [http://localhost/]
+
+
+Processing Admin::SettingsController#redirect (for 127.0.0.1 at 2009-09-21 18:06:40) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:40') [0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Load (0.2ms)[0m   [0mSELECT * FROM `users` LIMIT 1[0m
+Redirected to controlleraccounts/loginactionindex
+Filter chain halted as [:login_required] rendered_or_redirected.
+Completed in 9ms (DB: 1) | 302 Found [http://localhost/admin/settings/redirect]
+
+
+Processing AccountsController#login (for 127.0.0.1 at 2009-09-21 18:06:40) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.1ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:40') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `users` [0m
+Rendering template within layouts/accounts
+Rendering accounts/login
+Rendered shared/_loginform (1.0ms)
+Completed in 23ms (View: 7, DB: 2) | 200 OK [http://localhost/accounts/login]
+
+
+Processing AccountsController#login (for 127.0.0.1 at 2009-09-21 18:06:45) [POST]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"user_login"=>"nwise", "authenticity_token"=>"c881bfd917433a0e1bbcf16eea27afe8c7c8e231", "user_password"=>"taw49dub", "login"=>"Login »"}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:45') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT count(*) AS count_all FROM `users` [0m
+  [4;36;1mUser Load (0.3ms)[0m   [0;1mSELECT * FROM `users` WHERE (login = 'nwise' AND password = 'cb62a1049a5fbde05872f232bb2eaf387b448578' AND state = 'active') LIMIT 1[0m
+  [4;35;1mProfile Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+Cookie set: typo_user_profile=admin; path=/; expires=Mon, 02 Nov 2009 23:06:45 GMT
+Redirected to /admin/settings/redirect
+Completed in 25ms (DB: 3) | 302 Found [http://localhost/accounts/login]
+
+
+Processing Admin::SettingsController#redirect (for 127.0.0.1 at 2009-09-21 18:06:45) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.1ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:45') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Redirected to actionindex
+Completed in 29ms (DB: 3) | 302 Found [http://localhost/admin/settings/redirect]
+
+
+Processing Admin::SettingsController#index (for 127.0.0.1 at 2009-09-21 18:06:46) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.3ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:46') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/index
+Rendered admin/settings/_submit (0.2ms)
+Completed in 126ms (View: 99, DB: 4) | 200 OK [http://localhost/admin/settings]
+
+
+Processing Admin::SettingsController#write (for 127.0.0.1 at 2009-09-21 18:06:49) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.2ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:06:49') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.0ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/write
+  [4;36;1mTextFilter Load (0.1ms)[0m   [0;1mSELECT * FROM `text_filters` [0m
+  [4;35;1mTextFilter Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `text_filters`[0m
+  [4;36;1mTextFilter Load (0.2ms)[0m   [0;1mSELECT * FROM `text_filters` WHERE (`text_filters`.`name` = 'markdown smartypants') LIMIT 1[0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `text_filters` [0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `text_filters` WHERE (`text_filters`.`name` = 'markdown smartypants') LIMIT 1[0m
+Rendered admin/settings/_submit (0.2ms)
+Completed in 42ms (View: 23, DB: 3) | 200 OK [http://localhost/admin/settings/write]
+
+
+Processing Admin::SettingsController#update (for 127.0.0.1 at 2009-09-21 18:07:00) [POST]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"from"=>"write", "authenticity_token"=>"c881bfd917433a0e1bbcf16eea27afe8c7c8e231", "setting"=>{"comment_text_filter"=>"markdown smartypants", "text_filter"=>"markdown smartypants", "geourl_location"=>"", "itunes_copyright"=>"", "itunes_email"=>"", "itunes_author"=>"Nwise", "itunes_explicit"=>"0", "itunes_summary"=>"", "itunes_name"=>"", "itunes_subtitle"=>"", "send_outbound_pings"=>"1", "ping_urls"=>"http://blogsearch.google.com/ping/RPC2\r\nhttp://rpc.technorati.com/rpc/ping\r\nhttp://ping.blo.gs/\r\nhttp://rpc.weblogs.com/RPC2"}}
+  [4;35;1mTrigger Load (0.2ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:00') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBlog Update (0.2ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ntext_filter: markdown smartypants\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db2a7440> in the cache
+  [4;36;1mBlog Update (0.1ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db2a1018> in the cache
+  [4;35;1mBlog Update (0.1ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db298760> in the cache
+  [4;36;1mBlog Update (0.1ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_author: Nwise\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db2911e0> in the cache
+  [4;35;1mBlog Update (0.1ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db2895d0> in the cache
+  [4;36;1mBlog Update (0.1ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db2761b0> in the cache
+  [4;35;1mBlog Update (0.1ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\nitunes_summary: \"\"\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db2694b0> in the cache
+  [4;36;1mBlog Update (0.1ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\nitunes_explicit: false\nitunes_summary: \"\"\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db261ff8> in the cache
+  [4;35;1mBlog Update (0.1ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\nitunes_explicit: false\nitunes_summary: \"\"\nitunes_name: \"\"\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db258958> in the cache
+  [4;36;1mBlog Update (0.3ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\nitunes_explicit: false\nitunes_summary: \"\"\nitunes_name: \"\"\nitunes_subtitle: \"\"\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db68b070> in the cache
+  [4;35;1mBlog Update (0.3ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\nitunes_explicit: false\nitunes_summary: \"\"\nitunes_name: \"\"\nitunes_subtitle: \"\"\nsend_outbound_pings: true\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db679ac8> in the cache
+  [4;36;1mBlog Update (0.2ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\nitunes_explicit: false\nitunes_summary: \"\"\nitunes_name: \"\"\nitunes_subtitle: \"\"\nsend_outbound_pings: true\nping_urls: |-\n http://blogsearch.google.com/ping/RPC2\r\n http://rpc.technorati.com/rpc/ping\r\n http://ping.blo.gs/\r\n http://rpc.weblogs.com/RPC2\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db62cca0> in the cache
+  [4;35;1mBlog Update (0.2ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \ncomment_text_filter: markdown smartypants\ntext_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_copyright: \"\"\nitunes_email: \"\"\nitunes_author: Nwise\nitunes_explicit: false\nitunes_summary: \"\"\nitunes_name: \"\"\nitunes_subtitle: \"\"\nsend_outbound_pings: true\nping_urls: |-\n http://blogsearch.google.com/ping/RPC2\r\n http://rpc.technorati.com/rpc/ping\r\n http://ping.blo.gs/\r\n http://rpc.weblogs.com/RPC2\ncanonical_server_url: \"\"\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2eaab0> in the cache
+Storing #<Blog:0x7f16db620748> in the cache
+  [4;36;1mSQL (28.2ms)[0m   [0;1mCOMMIT[0m
+Redirected to actionwrite
+PageCache - sweep_theme_cache called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+PageCache - About to zap: "images/theme stylesheets/theme javascripts/theme"
+PageCache - sweep_all called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+  [4;35;1mCacheInformation Load (0.1ms)[0m   [0mSELECT * FROM `cache_informations` [0m
+Completed in 174ms (DB: 33) | 302 Found [http://localhost/admin/settings/update]
+
+
+Processing Admin::SettingsController#write (for 127.0.0.1 at 2009-09-21 18:07:01) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:01') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.0ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/write
+  [4;35;1mTextFilter Load (0.1ms)[0m   [0mSELECT * FROM `text_filters` [0m
+  [4;36;1mTextFilter Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `text_filters`[0m
+  [4;35;1mTextFilter Load (0.1ms)[0m   [0mSELECT * FROM `text_filters` WHERE (`text_filters`.`name` = 'markdown smartypants') LIMIT 1[0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `text_filters` [0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `text_filters` WHERE (`text_filters`.`name` = 'markdown smartypants') LIMIT 1[0m
+Rendered admin/settings/_submit (0.2ms)
+Completed in 118ms (View: 99, DB: 3) | 200 OK [http://localhost/admin/settings/write]
+
+
+Processing Admin::ContentController#index (for 127.0.0.1 at 2009-09-21 18:07:12) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:13') [0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.0ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mArticle Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mArticle Load (0.2ms)[0m   [0;1mSELECT * FROM `contents` WHERE (state = 'draft') AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mCategory Load (0.0ms)[0m   [0mSELECT * FROM `categories` ORDER BY UPPER(name), position ASC[0m
+  [4;36;1mArticle Load (0.2ms)[0m   [0;1mSELECT * FROM `contents` WHERE (state <> 'draft') AND ( (`contents`.`type` = 'Article' ) ) ORDER BY created_at DESC, created_at DESC LIMIT 0, 10[0m
+Rendering template within layouts/administration
+Rendering admin/content/index
+Rendered admin/content/_drafts (0.2ms)
+  [4;35;1mArticle Load (0.3ms)[0m   [0mSELECT date_format(published_at, '%Y-%m') AS publication FROM contents WHERE published_at is not NULL AND type='Article' GROUP BY publication ORDER BY publication DESC[0m
+  [4;36;1mUser Load (0.2ms)[0m   [0;1mSELECT * FROM `users` [0m
+  [4;35;1mCategory Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `categories`[0m
+  [4;36;1mCategorization Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `categorizations`[0m
+  [4;35;1mCategory Load Including Associations (0.5ms)[0m   [0mSELECT `categories`.`id` AS t0_r0, `categories`.`name` AS t0_r1, `categories`.`position` AS t0_r2, `categories`.`permalink` AS t0_r3, `categories`.`keywords` AS t0_r4, `categories`.`description` AS t0_r5, `categories`.`parent_id` AS t0_r6, `categorizations_categories`.`id` AS t1_r0, `categorizations_categories`.`article_id` AS t1_r1, `categorizations_categories`.`category_id` AS t1_r2, `categorizations_categories`.`is_primary` AS t1_r3 FROM `categories` LEFT OUTER JOIN `categorizations` categorizations_categories ON categorizations_categories.category_id = categories.id INNER JOIN categorizations ON categories.id = categorizations.category_id WHERE ((`categorizations`.article_id = 1)) ORDER BY categorizations.is_primary DESC, categories.position , position ASC[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) [0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mComment Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `feedback`[0m
+  [4;36;1mComment Load (0.3ms)[0m   [0;1mSELECT * FROM `feedback` WHERE (`feedback`.article_id = 1 AND (`feedback`.`state` IN ('presumed_ham','ham'))) AND ( (`feedback`.`type` = 'Comment' ) ) ORDER BY created_at ASC[0m
+Rendered admin/content/_article_list (10.6ms)
+Completed in 131ms (View: 107, DB: 4) | 200 OK [http://localhost/admin/content]
+
+
+Processing Admin::ContentController#edit (for 127.0.0.1 at 2009-09-21 18:07:17) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"id"=>"1"}
+  [4;35;1mTrigger Load (0.2ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:17') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.0ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mArticle Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mArticle Load (0.1ms)[0m   [0mSELECT * FROM `contents` WHERE (state='draft') AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;36;1mArticle Load (0.2ms)[0m   [0;1mSELECT * FROM `contents` WHERE (`contents`.`id` = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `contents` WHERE (`contents`.`id` = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;36;1mResource Load (0.1ms)[0m   [0;1mSELECT * FROM `resources` ORDER BY filename[0m
+  [4;35;1mCategory Load (0.0ms)[0m   [0mSELECT * FROM `categories` ORDER BY UPPER(name), position ASC[0m
+  [4;36;1mCategory Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `categories`[0m
+  [4;35;1mCategorization Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `categorizations`[0m
+  [4;36;1mCategory Load Including Associations (0.1ms)[0m   [0;1mSELECT `categories`.`id` AS t0_r0, `categories`.`name` AS t0_r1, `categories`.`position` AS t0_r2, `categories`.`permalink` AS t0_r3, `categories`.`keywords` AS t0_r4, `categories`.`description` AS t0_r5, `categories`.`parent_id` AS t0_r6, `categorizations_categories`.`id` AS t1_r0, `categorizations_categories`.`article_id` AS t1_r1, `categorizations_categories`.`category_id` AS t1_r2, `categorizations_categories`.`is_primary` AS t1_r3 FROM `categories` LEFT OUTER JOIN `categorizations` categorizations_categories ON categorizations_categories.category_id = categories.id INNER JOIN categorizations ON categories.id = categorizations.category_id WHERE ((`categorizations`.article_id = 1)) ORDER BY categorizations.is_primary DESC, categories.position , position ASC[0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `contents` WHERE (state='draft') AND ( (`contents`.`type` = 'Article' ) ) [0m
+Rendering template within layouts/administration
+Rendering admin/content/new
+Rendered admin/content/_drafts (0.2ms)
+  [4;36;1mResource Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `resources`[0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSELECT count(*) AS count_all FROM `resources` WHERE (`resources`.article_id = 1) [0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM `resources` WHERE (`resources`.article_id = 1) [0m
+  [4;35;1mResource Load (0.3ms)[0m   [0mSELECT * FROM `resources` WHERE (`resources`.article_id = 1) ORDER BY created_at DESC[0m
+Rendered admin/content/_attachment (3.1ms)
+  [4;36;1mTextFilter Load (0.1ms)[0m   [0;1mSELECT * FROM `text_filters` [0m
+  [4;35;1mTextFilter Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `text_filters`[0m
+  [4;36;1mTextFilter Load (0.2ms)[0m   [0;1mSELECT * FROM `text_filters` WHERE (`text_filters`.`id` = 5) [0m
+Rendered admin/content/_form (101.4ms)
+Rendered admin/shared/_edit (104.9ms)
+Completed in 158ms (View: 114, DB: 7) | 200 OK [http://localhost/admin/content/edit/1]
+
+
+Processing Admin::DashboardController#index (for 127.0.0.1 at 2009-09-21 18:07:26) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.2ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:26') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.0ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.2ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mComment Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `feedback`[0m
+  [4;35;1mComment Load (0.2ms)[0m   [0mSELECT * FROM `feedback` WHERE (published = 1) AND ( (`feedback`.`type` = 'Comment' ) ) ORDER BY created_at DESC LIMIT 5[0m
+  [4;36;1mArticle Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mArticle Load (0.3ms)[0m   [0mSELECT * FROM `contents` WHERE (published = 1) AND ( (`contents`.`type` = 'Article' ) ) ORDER BY published_at DESC LIMIT 5[0m
+  [4;36;1mArticle Load (32.1ms)[0m   [0;1mSELECT contents.*, comment_counts.count AS comment_count FROM contents, (SELECT feedback.article_id AS article_id, COUNT(feedback.id) as count FROM feedback WHERE feedback.state IN ('presumed_ham', 'ham') GROUP BY feedback.article_id ORDER BY count DESC LIMIT 9) AS comment_counts WHERE (comment_counts.article_id = contents.id AND published = 1) AND ( (`contents`.`type` = 'Article' ) ) ORDER BY comment_counts.count DESC LIMIT 5[0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSELECT count(*) AS count_all FROM `contents` WHERE (`contents`.`published` = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `contents` WHERE (`contents`.user_id = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT count(*) AS count_all FROM `feedback` WHERE (state != 'spam') AND ( (`feedback`.`type` = 'Comment' ) ) [0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `feedback` WHERE (`feedback`.`state` = 'spam') AND ( (`feedback`.`type` = 'Comment' ) ) [0m
+Rendering template within layouts/administration
+Rendering admin/dashboard/index
+Rendered admin/dashboard/_welcome (2.4ms)
+Rendered admin/dashboard/_overview (1.5ms)
+Rendered admin/dashboard/_sysinfo (0.2ms)
+Rendered admin/dashboard/_inbound (0.3ms)
+Rendered admin/dashboard/_comments (0.2ms)
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSELECT count(*) AS count_all FROM `feedback` WHERE (`feedback`.article_id = 1 AND (`feedback`.`published` = 1)) AND ( (`feedback`.`type` = 'Comment' ) ) [0m
+Rendered admin/dashboard/_posts (5.5ms)
+Rendered admin/dashboard/_popular (0.2ms)
+Rendered admin/dashboard/_typo_dev (0.6ms)
+Completed in 2600ms (View: 26, DB: 37) | 200 OK [http://localhost/admin]
+
+
+Processing Admin::DashboardController#index (for 127.0.0.1 at 2009-09-21 18:07:30) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:30') [0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.0ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mComment Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `feedback`[0m
+  [4;36;1mComment Load (0.1ms)[0m   [0;1mSELECT * FROM `feedback` WHERE (published = 1) AND ( (`feedback`.`type` = 'Comment' ) ) ORDER BY created_at DESC LIMIT 5[0m
+  [4;35;1mArticle Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mArticle Load (0.1ms)[0m   [0;1mSELECT * FROM `contents` WHERE (published = 1) AND ( (`contents`.`type` = 'Article' ) ) ORDER BY published_at DESC LIMIT 5[0m
+  [4;35;1mArticle Load (0.1ms)[0m   [0mSELECT contents.*, comment_counts.count AS comment_count FROM contents, (SELECT feedback.article_id AS article_id, COUNT(feedback.id) as count FROM feedback WHERE feedback.state IN ('presumed_ham', 'ham') GROUP BY feedback.article_id ORDER BY count DESC LIMIT 9) AS comment_counts WHERE (comment_counts.article_id = contents.id AND published = 1) AND ( (`contents`.`type` = 'Article' ) ) ORDER BY comment_counts.count DESC LIMIT 5[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM `contents` WHERE (`contents`.`published` = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT count(*) AS count_all FROM `contents` WHERE (`contents`.user_id = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM `feedback` WHERE (state != 'spam') AND ( (`feedback`.`type` = 'Comment' ) ) [0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT count(*) AS count_all FROM `feedback` WHERE (`feedback`.`state` = 'spam') AND ( (`feedback`.`type` = 'Comment' ) ) [0m
+Rendering template within layouts/administration
+Rendering admin/dashboard/index
+Rendered admin/dashboard/_welcome (2.3ms)
+Rendered admin/dashboard/_overview (0.9ms)
+Rendered admin/dashboard/_sysinfo (0.2ms)
+Rendered admin/dashboard/_inbound (0.3ms)
+Rendered admin/dashboard/_comments (0.2ms)
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `feedback` WHERE (`feedback`.article_id = 1 AND (`feedback`.`published` = 1)) AND ( (`feedback`.`type` = 'Comment' ) ) [0m
+Rendered admin/dashboard/_posts (5.2ms)
+Rendered admin/dashboard/_popular (0.2ms)
+Rendered admin/dashboard/_typo_dev (0.6ms)
+Completed in 1766ms (View: 25, DB: 4) | 200 OK [http://localhost/admin]
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ArticlesController#index (for 127.0.0.1 at 2009-09-21 18:07:50) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.2ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:50') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mUser Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM `users` [0m
+Redirected to controlleradmin/settingsactionredirect
+Filter chain halted as [:verify_config] rendered_or_redirected.
+Completed in 9ms (DB: 2) | 302 Found [http://localhost/]
+
+
+Processing Admin::SettingsController#redirect (for 127.0.0.1 at 2009-09-21 18:07:51) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:51') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Redirected to actionindex
+Completed in 29ms (DB: 4) | 302 Found [http://localhost/admin/settings/redirect]
+
+
+Processing Admin::SettingsController#index (for 127.0.0.1 at 2009-09-21 18:07:51) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.1ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:51') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/index
+Rendered admin/settings/_submit (0.2ms)
+Completed in 126ms (View: 12, DB: 3) | 200 OK [http://localhost/admin/settings]
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing RedirectController#redirect (for 127.0.0.1 at 2009-09-21 18:07:57) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"from"=>["hello_world"]}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:57') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mUser Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `users` [0m
+Redirected to controlleradmin/settingsactionredirect
+Filter chain halted as [:verify_config] rendered_or_redirected.
+Completed in 101ms (DB: 3) | 302 Found [http://localhost/hello_world]
+
+
+Processing Admin::SettingsController#redirect (for 127.0.0.1 at 2009-09-21 18:07:57) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.1ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:57') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Redirected to actionindex
+Completed in 27ms (DB: 3) | 302 Found [http://localhost/admin/settings/redirect]
+
+
+Processing Admin::SettingsController#index (for 127.0.0.1 at 2009-09-21 18:07:58) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.3ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:07:58') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/index
+Rendered admin/settings/_submit (0.2ms)
+Completed in 43ms (View: 16, DB: 3) | 200 OK [http://localhost/admin/settings]
+
+
+Processing Admin::FeedbackController#index (for 127.0.0.1 at 2009-09-21 18:08:51) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:08:51') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mFeedback Columns (1.2ms)[0m   [0;1mSHOW FIELDS FROM `feedback`[0m
+  [4;35;1mFeedback Load (0.3ms)[0m   [0mSELECT * FROM `feedback` WHERE (1 = 1) AND ( (`feedback`.`type` = 'Feedback' OR `feedback`.`type` = 'Comment' OR `feedback`.`type` = 'Trackback' ) ) ORDER BY feedback.created_at desc LIMIT 0, 10[0m
+Rendering template within layouts/administration
+Rendering admin/feedback/index
+Rendered admin/feedback/_button (0.7ms)
+Rendered admin/feedback/_button (0.7ms)
+Completed in 57ms (View: 22, DB: 5) | 200 OK [http://localhost/admin/feedback]
+
+
+Processing Admin::ContentController#index (for 127.0.0.1 at 2009-09-21 18:08:53) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.3ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:08:53') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mArticle Columns (1.3ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mArticle Load (0.1ms)[0m   [0;1mSELECT * FROM `contents` WHERE (state = 'draft') AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mCategory Load (0.1ms)[0m   [0mSELECT * FROM `categories` ORDER BY UPPER(name), position ASC[0m
+  [4;36;1mArticle Load (0.1ms)[0m   [0;1mSELECT * FROM `contents` WHERE (state <> 'draft') AND ( (`contents`.`type` = 'Article' ) ) ORDER BY created_at DESC, created_at DESC LIMIT 0, 10[0m
+Rendering template within layouts/administration
+Rendering admin/content/index
+Rendered admin/content/_drafts (0.3ms)
+  [4;35;1mArticle Load (0.1ms)[0m   [0mSELECT date_format(published_at, '%Y-%m') AS publication FROM contents WHERE published_at is not NULL AND type='Article' GROUP BY publication ORDER BY publication DESC[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` [0m
+  [4;35;1mCategory Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `categories`[0m
+  [4;36;1mCategorization Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `categorizations`[0m
+  [4;35;1mCategory Load Including Associations (0.1ms)[0m   [0mSELECT `categories`.`id` AS t0_r0, `categories`.`name` AS t0_r1, `categories`.`position` AS t0_r2, `categories`.`permalink` AS t0_r3, `categories`.`keywords` AS t0_r4, `categories`.`description` AS t0_r5, `categories`.`parent_id` AS t0_r6, `categorizations_categories`.`id` AS t1_r0, `categorizations_categories`.`article_id` AS t1_r1, `categorizations_categories`.`category_id` AS t1_r2, `categorizations_categories`.`is_primary` AS t1_r3 FROM `categories` LEFT OUTER JOIN `categorizations` categorizations_categories ON categorizations_categories.category_id = categories.id INNER JOIN categorizations ON categories.id = categorizations.category_id WHERE ((`categorizations`.article_id = 1)) ORDER BY categorizations.is_primary DESC, categories.position , position ASC[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) [0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mComment Columns (1.2ms)[0m   [0mSHOW FIELDS FROM `feedback`[0m
+  [4;36;1mComment Load (0.1ms)[0m   [0;1mSELECT * FROM `feedback` WHERE (`feedback`.article_id = 1 AND (`feedback`.`state` IN ('presumed_ham','ham'))) AND ( (`feedback`.`type` = 'Comment' ) ) ORDER BY created_at ASC[0m
+Rendered admin/content/_article_list (13.2ms)
+Completed in 77ms (View: 40, DB: 5) | 200 OK [http://localhost/admin/content]
+
+
+Processing Admin::ContentController#edit (for 127.0.0.1 at 2009-09-21 18:08:55) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"id"=>"1"}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:08:55') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mArticle Columns (1.2ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mArticle Load (0.1ms)[0m   [0mSELECT * FROM `contents` WHERE (state='draft') AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;36;1mArticle Load (0.1ms)[0m   [0;1mSELECT * FROM `contents` WHERE (`contents`.`id` = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `contents` WHERE (`contents`.`id` = 1) AND ( (`contents`.`type` = 'Article' ) ) [0m
+  [4;36;1mResource Load (0.1ms)[0m   [0;1mSELECT * FROM `resources` ORDER BY filename[0m
+  [4;35;1mCategory Load (0.1ms)[0m   [0mSELECT * FROM `categories` ORDER BY UPPER(name), position ASC[0m
+  [4;36;1mCategory Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `categories`[0m
+  [4;35;1mCategorization Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `categorizations`[0m
+  [4;36;1mCategory Load Including Associations (0.1ms)[0m   [0;1mSELECT `categories`.`id` AS t0_r0, `categories`.`name` AS t0_r1, `categories`.`position` AS t0_r2, `categories`.`permalink` AS t0_r3, `categories`.`keywords` AS t0_r4, `categories`.`description` AS t0_r5, `categories`.`parent_id` AS t0_r6, `categorizations_categories`.`id` AS t1_r0, `categorizations_categories`.`article_id` AS t1_r1, `categorizations_categories`.`category_id` AS t1_r2, `categorizations_categories`.`is_primary` AS t1_r3 FROM `categories` LEFT OUTER JOIN `categorizations` categorizations_categories ON categorizations_categories.category_id = categories.id INNER JOIN categorizations ON categories.id = categorizations.category_id WHERE ((`categorizations`.article_id = 1)) ORDER BY categorizations.is_primary DESC, categories.position , position ASC[0m
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `contents` WHERE (state='draft') AND ( (`contents`.`type` = 'Article' ) ) [0m
+Rendering template within layouts/administration
+Rendering admin/content/new
+Rendered admin/content/_drafts (0.2ms)
+  [4;36;1mResource Columns (1.1ms)[0m   [0;1mSHOW FIELDS FROM `resources`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT count(*) AS count_all FROM `resources` WHERE (`resources`.article_id = 1) [0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT count(*) AS count_all FROM `resources` WHERE (`resources`.article_id = 1) [0m
+  [4;35;1mResource Load (0.1ms)[0m   [0mSELECT * FROM `resources` WHERE (`resources`.article_id = 1) ORDER BY created_at DESC[0m
+Rendered admin/content/_attachment (2.6ms)
+  [4;36;1mTextFilter Load (0.1ms)[0m   [0;1mSELECT * FROM `text_filters` [0m
+  [4;35;1mTextFilter Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `text_filters`[0m
+  [4;36;1mTextFilter Load (0.1ms)[0m   [0;1mSELECT * FROM `text_filters` WHERE (`text_filters`.`id` = 5) [0m
+Rendered admin/content/_form (27.8ms)
+Rendered admin/shared/_edit (32.9ms)
+Completed in 178ms (View: 44, DB: 8) | 200 OK [http://localhost/admin/content/edit/1]
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing RedirectController#redirect (for 127.0.0.1 at 2009-09-21 18:09:06) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"from"=>["hello-world"]}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:06') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mUser Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `users` [0m
+Redirected to controlleradmin/settingsactionredirect
+Filter chain halted as [:verify_config] rendered_or_redirected.
+Completed in 13ms (DB: 3) | 302 Found [http://localhost/hello-world]
+
+
+Processing Admin::SettingsController#redirect (for 127.0.0.1 at 2009-09-21 18:09:07) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:07') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Redirected to actionindex
+Completed in 116ms (DB: 4) | 302 Found [http://localhost/admin/settings/redirect]
+
+
+Processing Admin::SettingsController#index (for 127.0.0.1 at 2009-09-21 18:09:07) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.1ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:07') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (1.0ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.1ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.3ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/index
+Rendered admin/settings/_submit (0.2ms)
+Completed in 43ms (View: 16, DB: 3) | 200 OK [http://localhost/admin/settings]
+
+
+Processing Admin::SettingsController#update (for 127.0.0.1 at 2009-09-21 18:09:19) [POST]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  Parameters: {"from"=>"index", "authenticity_token"=>"c881bfd917433a0e1bbcf16eea27afe8c7c8e231", "setting"=>{"blog_subtitle"=>"", "blog_name"=>"My Shiny Weblog!", "allow_signup"=>"0", "base_url"=>"http://localhost:3000", "lang"=>"en_US"}}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:19') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `blogs`[0m
+  [4;36;1mUser Columns (1.0ms)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;36;1mProfile Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `profiles`[0m
+  [4;35;1mProfile Load (0.1ms)[0m   [0mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;36;1mSQL (0.3ms)[0m   [0;1mSHOW TABLES[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mSELECT version FROM schema_migrations[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mBEGIN[0m
+  [4;35;1mBlog Update (0.3ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \nblog_name: My Shiny Weblog!\ntext_filter: markdown smartypants\ncomment_text_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_author: Nwise\nitunes_email: \"\"\nitunes_copyright: \"\"\nitunes_summary: \"\"\nitunes_explicit: false\nitunes_name: \"\"\nitunes_subtitle: \"\"\nsend_outbound_pings: true\ncanonical_server_url: \"\"\nping_urls: |-\n http://blogsearch.google.com/ping/RPC2\n http://rpc.technorati.com/rpc/ping\n http://ping.blo.gs/\n http://rpc.weblogs.com/RPC2\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2f9dd0> in the cache
+Storing #<Blog:0x7f16db2a4bf0> in the cache
+  [4;36;1mBlog Update (0.2ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \nblog_subtitle: \"\"\nblog_name: My Shiny Weblog!\ntext_filter: markdown smartypants\ncomment_text_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_author: Nwise\nitunes_email: \"\"\nitunes_copyright: \"\"\nitunes_summary: \"\"\nitunes_explicit: false\nitunes_name: \"\"\nitunes_subtitle: \"\"\nsend_outbound_pings: true\ncanonical_server_url: \"\"\nping_urls: |-\n http://blogsearch.google.com/ping/RPC2\n http://rpc.technorati.com/rpc/ping\n http://ping.blo.gs/\n http://rpc.weblogs.com/RPC2\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2f9dd0> in the cache
+Storing #<Blog:0x7f16db2939b8> in the cache
+  [4;35;1mBlog Update (0.3ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \nblog_subtitle: \"\"\nblog_name: My Shiny Weblog!\ntext_filter: markdown smartypants\ncomment_text_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_author: Nwise\nitunes_email: \"\"\nitunes_copyright: \"\"\nallow_signup: 0\nitunes_summary: \"\"\nitunes_explicit: false\nitunes_name: \"\"\nitunes_subtitle: \"\"\nsend_outbound_pings: true\ncanonical_server_url: \"\"\nping_urls: |-\n http://blogsearch.google.com/ping/RPC2\n http://rpc.technorati.com/rpc/ping\n http://ping.blo.gs/\n http://rpc.weblogs.com/RPC2\n', `base_url` = 'http://localhost:3000' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2f9dd0> in the cache
+Storing #<Blog:0x7f16db286768> in the cache
+  [4;36;1mBlog Update (0.2ms)[0m   [0;1mUPDATE `blogs` SET `settings` = '--- \nblog_subtitle: \"\"\nblog_name: My Shiny Weblog!\ntext_filter: markdown smartypants\ncomment_text_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_author: Nwise\nitunes_email: \"\"\nitunes_copyright: \"\"\nallow_signup: 0\nitunes_summary: \"\"\nitunes_explicit: false\nitunes_name: \"\"\nlang: en_US\nitunes_subtitle: \"\"\nsend_outbound_pings: true\ncanonical_server_url: \"\"\nping_urls: |-\n http://blogsearch.google.com/ping/RPC2\n http://rpc.technorati.com/rpc/ping\n http://ping.blo.gs/\n http://rpc.weblogs.com/RPC2\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2f9dd0> in the cache
+Storing #<Blog:0x7f16db27b2a0> in the cache
+  [4;35;1mBlog Update (0.2ms)[0m   [0mUPDATE `blogs` SET `settings` = '--- \nblog_subtitle: \"\"\nblog_name: My Shiny Weblog!\ntext_filter: markdown smartypants\ncomment_text_filter: markdown smartypants\ngeourl_location: \"\"\nitunes_author: Nwise\nitunes_email: \"\"\nitunes_copyright: \"\"\nallow_signup: 0\nitunes_summary: \"\"\nitunes_explicit: false\nitunes_name: \"\"\nlang: en_US\nitunes_subtitle: \"\"\nsend_outbound_pings: true\ncanonical_server_url: \"\"\nping_urls: |-\n http://blogsearch.google.com/ping/RPC2\n http://rpc.technorati.com/rpc/ping\n http://ping.blo.gs/\n http://rpc.weblogs.com/RPC2\n' WHERE `id` = 1[0m
+Storing #<Blog:0x7f16db2f9dd0> in the cache
+Storing #<Blog:0x7f16db270940> in the cache
+  [4;36;1mSQL (10.4ms)[0m   [0;1mCOMMIT[0m
+Redirected to actionindex
+PageCache - sweep_theme_cache called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+PageCache - About to zap: "images/theme stylesheets/theme javascripts/theme"
+PageCache - sweep_all called by "/home/nate/workspace/wise-web/app/models/blog_sweeper.rb:10:in `send'"
+  [4;35;1mCacheInformation Load (0.1ms)[0m   [0mSELECT * FROM `cache_informations` [0m
+Completed in 158ms (DB: 15) | 302 Found [http://localhost/admin/settings/update]
+
+
+Processing Admin::SettingsController#index (for 127.0.0.1 at 2009-09-21 18:09:20) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;36;1mTrigger Load (0.2ms)[0m   [0;1mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:20') [0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+  [4;35;1mUser Columns (0.7ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mUser Load (0.1ms)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 1) LIMIT 1[0m
+  [4;35;1mProfile Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `profiles`[0m
+  [4;36;1mProfile Load (0.0ms)[0m   [0;1mSELECT * FROM `profiles` WHERE (`profiles`.`id` = 1) [0m
+  [4;35;1mSQL (0.2ms)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Rendering template within layouts/administration
+Rendering admin/settings/index
+Rendered admin/settings/_submit (0.2ms)
+Completed in 30ms (View: 11, DB: 3) | 200 OK [http://localhost/admin/settings]
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ArticlesController#index (for 127.0.0.1 at 2009-09-21 18:09:24) [GET]
+  Session ID: da4be9a53fe0d3e9f0af177d62c31408
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:24') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mUser Columns (1.1ms)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `users` [0m
+  [4;35;1mArticle Columns (1.2ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+  [4;36;1mArticle Load (0.4ms)[0m   [0;1mSELECT * FROM `contents` WHERE (`contents`.`published` = 1) AND ( (`contents`.`type` = 'Article' ) ) ORDER BY published_at DESC LIMIT 0, 10[0m
+Rendering template within ../../themes/typographic/layouts/default.html.erb
+Rendering articles/index
+  [4;35;1mCACHE (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mUser Load (0.1ms)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 1) [0m
+  [4;36;1mTextFilter Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `text_filters`[0m
+  [4;35;1mTextFilter Load (0.1ms)[0m   [0mSELECT * FROM `text_filters` WHERE (`text_filters`.`id` = 5) [0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mComment Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `feedback`[0m
+  [4;36;1mSQL (0.1ms)[0m   [0;1mSELECT count(*) AS count_all FROM `feedback` WHERE (`feedback`.article_id = 1 AND (`feedback`.`published` = 1)) AND ( (`feedback`.`type` = 'Comment' ) ) [0m
+Rendered articles/_article (23.3ms)
+  [4;35;1mSidebar Load (0.3ms)[0m   [0mSELECT * FROM `sidebars` ORDER BY active_position ASC[0m
+  [4;36;1mSidebar Columns (0.4ms)[0m   [0;1mSHOW FIELDS FROM `sidebars`[0m
+  [4;35;1mPageSidebar Columns (0.4ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+Rendering /home/nate/workspace/wise-web/vendor/plugins/page_sidebar/views/content.rhtml
+  [4;36;1mPage Columns (0.8ms)[0m   [0;1mSHOW FIELDS FROM `contents`[0m
+  [4;35;1mPage Load (0.2ms)[0m   [0mSELECT * FROM `contents` WHERE ( (`contents`.`type` = 'Page' ) ) [0m
+  [4;36;1mCACHE (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mCategorySidebar Columns (0.6ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+Rendering /home/nate/workspace/wise-web/vendor/plugins/category_sidebar/views/content.rhtml
+  [4;36;1mCategory Load (0.5ms)[0m   [0;1m
+ SELECT categories.id, categories.name, categories.permalink, categories.position, COUNT(articles.id) AS article_counter
+ FROM categories categories
+ LEFT OUTER JOIN categorizations articles_categories
+ ON articles_categories.category_id = categories.id
+ LEFT OUTER JOIN contents articles
+ ON (articles_categories.article_id = articles.id AND articles.published = 1)
+ GROUP BY categories.id, categories.name, categories.position, categories.permalink
+ ORDER BY position
+ [0m
+  [4;35;1mArchivesSidebar Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+  [4;36;1mContent Load (15.2ms)[0m   [0;1mselect count(*) as count, extract(year from published_at) as year,extract(month from published_at) as month from contents where type='Article' and published = 1 and published_at < '2009-09-21 18:09:24' group by year,month order by year desc,month desc limit 10 [0m
+  [4;35;1mContent Columns (0.8ms)[0m   [0mSHOW FIELDS FROM `contents`[0m
+Rendering /home/nate/workspace/wise-web/vendor/plugins/archives_sidebar/views/content.rhtml
+  [4;36;1mStaticSidebar Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `sidebars`[0m
+Rendering /home/nate/workspace/wise-web/vendor/plugins/static_sidebar/views/content.rhtml
+  [4;35;1mXmlSidebar Columns (0.5ms)[0m   [0mSHOW FIELDS FROM `sidebars`[0m
+Rendering /home/nate/workspace/wise-web/vendor/plugins/xml_sidebar/views/content.rhtml
+Cached page: /index.html (0.3ms)
+  [4;36;1mCacheInformation Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `cache_informations`[0m
+  [4;35;1mSQL (0.1ms)[0m   [0mBEGIN[0m
+  [4;36;1mCacheInformation Exists (0.2ms)[0m   [0;1mSELECT `cache_informations`.id FROM `cache_informations` WHERE (`cache_informations`.`path` = BINARY '/index.html') LIMIT 1[0m
+  [4;35;1mCacheInformation Create (0.2ms)[0m   [0mINSERT INTO `cache_informations` (`created_at`, `updated_at`, `path`) VALUES('2009-09-21 18:09:24', '2009-09-21 18:09:24', '/index.html')[0m
+  [4;36;1mSQL (11.4ms)[0m   [0;1mCOMMIT[0m
+Completed in 208ms (View: 165, DB: 17) | 200 OK [http://localhost/]
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ThemeController#stylesheets (for 127.0.0.1 at 2009-09-21 18:09:24) [GET]
+  Parameters: {"filename"=>"style.css"}
+  [4;35;1mTrigger Load (0.1ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:24') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Completed in 95ms (View: 0, DB: 1) | 200 OK [http://localhost/stylesheets/theme/style.css]
+Streaming file /home/nate/workspace/wise-web/themes/typographic/stylesheets/style.css
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ThemeController#stylesheets (for 127.0.0.1 at 2009-09-21 18:09:25) [GET]
+  Parameters: {"filename"=>"reset.css"}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:25') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Completed in 13ms (View: 0, DB: 1) | 200 OK [http://localhost/stylesheets/theme/reset.css]
+Streaming file /home/nate/workspace/wise-web/themes/typographic/stylesheets/reset.css
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.6ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ThemeController#stylesheets (for 127.0.0.1 at 2009-09-21 18:09:25) [GET]
+  Parameters: {"filename"=>"layout.css"}
+  [4;35;1mTrigger Load (0.1ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:25') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Completed in 13ms (View: 0, DB: 1) | 200 OK [http://localhost/stylesheets/theme/layout.css]
+Streaming file /home/nate/workspace/wise-web/themes/typographic/stylesheets/layout.css
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.7ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ThemeController#stylesheets (for 127.0.0.1 at 2009-09-21 18:09:26) [GET]
+  Parameters: {"filename"=>"colors.css"}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:26') [0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Completed in 13ms (View: 0, DB: 1) | 200 OK [http://localhost/stylesheets/theme/colors.css]
+Streaming file /home/nate/workspace/wise-web/themes/typographic/stylesheets/colors.css
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ThemeController#images (for 127.0.0.1 at 2009-09-21 18:09:26) [GET]
+  Parameters: {"filename"=>"bg_body.jpg"}
+  [4;35;1mTrigger Load (0.1ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:26') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Completed in 10ms (View: 0, DB: 1) | 200 OK [http://localhost/images/theme/bg_body.jpg]
+Streaming file /home/nate/workspace/wise-web/themes/typographic/images/bg_body.jpg
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.1ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ThemeController#images (for 127.0.0.1 at 2009-09-21 18:09:27) [GET]
+  Parameters: {"filename"=>"bg_white.png"}
+  [4;35;1mTrigger Load (0.3ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:27') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Completed in 86ms (View: 0, DB: 1) | 200 OK [http://localhost/images/theme/bg_white.png]
+Streaming file /home/nate/workspace/wise-web/themes/typographic/images/bg_white.png
+  [4;35;1mSQL (0.1ms)[0m   [0mSET SQL_AUTO_IS_NULL=0[0m
+  [4;36;1mBlog Load (0.1ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;35;1mBlog Load (0.0ms)[0m   [0mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+  [4;36;1mBlog Columns (0.5ms)[0m   [0;1mSHOW FIELDS FROM `blogs`[0m
+
+
+Processing ThemeController#images (for 127.0.0.1 at 2009-09-21 18:09:27) [GET]
+  Parameters: {"filename"=>"bullet_right.png"}
+  [4;35;1mTrigger Load (0.1ms)[0m   [0mSELECT * FROM `triggers` WHERE (due_at <= '2009-09-21 18:09:27') [0m
+  [4;36;1mBlog Load (0.0ms)[0m   [0;1mSELECT * FROM `blogs` ORDER BY id LIMIT 1[0m
+Completed in 9ms (View: 0, DB: 1) | 200 OK [http://localhost/images/theme/bullet_right.png]
+Streaming file /home/nate/workspace/wise-web/themes/typographic/images/bullet_right.png
