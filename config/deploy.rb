@@ -11,7 +11,7 @@ set :deploy_via, :remote_cache
 #set :git_enable_submodules, 1 # if you have vendored rails
 set :branch, 'master'
 set :git_shallow_clone, 1
-set :scm_verbose, true
+set :scm_verbose, false
 set :scm_username, 'nwise'
 set :scm_password, 'hlip96'
 
