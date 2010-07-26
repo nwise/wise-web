@@ -1,15 +1,31 @@
-set :application, "set your application name here"
-set :repository,  "set your repository location here"
+set :user, 'nwise'  # Your dreamhost account's username
+set :domain, 'marlins.dreamhost.com'  # Dreamhost servername where your account is located 
+set :project, 'wise-web.net'  # Your application as its called in the repository
+set :application, 'wise-web.net'  # Your app's location (domain or sub-domain name as setup in panel)
+set :applicationdir, "/home/nwise/wise-web.net"  # The standard Dreamhost setup
 
-# If you aren't deploying to /u/apps/#{application} on the target
-# servers (which is the default), you can specify the actual location
-# via the :deploy_to variable:
-# set :deploy_to, "/var/www/#{application}"
+# version control config
+set :scm, 'git'
+set :repository,  "git@github.com:nwise/wise-web.git"
+set :deploy_via, :remote_cache
+#set :git_enable_submodules, 1 # if you have vendored rails
+set :branch, 'master'
+set :git_shallow_clone, 1
+set :scm_verbose, true
+set :scm_username, 'nwise'
+set :scm_password, 'hlip96'
 
-# If you aren't using Subversion to manage your source code, specify
-# your SCM below:
-# set :scm, :subversion
+# roles (servers)
+role :web, domain
+role :app, domain
+role :db,  domain, :primary => true
 
-role :app, "your app-server here"
-role :web, "your web-server here"
-role :db,  "your db-server here", :primary => true
+# deploy config
+set :deploy_to, applicationdir
+set :deploy_via, :export
+
+# additional settings
+default_run_options[:pty] = true  # Forgo errors when deploying from windows
+#ssh_options[:keys] = %w(/Path/To/id_rsa)            # If you are using ssh_keys
+set :chmod755, "app config db lib public vendor script script/* public/disp*"
+set :use_sudo, false

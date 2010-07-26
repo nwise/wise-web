@@ -1,0 +1,18 @@
+
+        login: &login
+          adapter: mysql
+          host: mysql.wise-web.net 
+          username: nwise 
+          password: hlip96
+          database: wiseweb_production 
+
+        development:
+          <<: *login
+
+        production:
+          <<: *login
+
+        test:
+          database: typo_test
+          <<: *login
+        
